@@ -23,7 +23,7 @@ docker run -it --name openarray-fedora fedora:22 bash
 
 ```shell
 dnf update
-dnf install -y tar gzip bzip2 git wget vim findutils make m4 gcc gcc-c++ gcc-gfortran openmpi openmpi-devel
+dnf install -y tar gzip bzip2 git wget vim findutils make m4 gcc gcc-c++ gcc-gfortran openmpi openmpi-devel automake
 # TODO: automake 依赖等待删除
 ```
 

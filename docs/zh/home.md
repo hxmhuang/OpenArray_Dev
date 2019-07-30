@@ -4,12 +4,33 @@
 
 ### openSUSE
 
-- [openmpi](./build_from_scratch/opensuse-openmpi.md)
-- [mpich](./build_from_scratch/opensuse-mpich.md)
+- [x] [openmpi](./build_from_scratch/opensuse-openmpi.md)
+- [x] [mpich](./build_from_scratch/opensuse-mpich.md)
 
 ### Fedora
 
-- [openmpi](./build_from_scratch/fedora-openmpi.md)
+- [x] [openmpi](./build_from_scratch/fedora-openmpi.md)
+- [ ] mpich
+
+### MacOS
+
+- [ ] openmpi
+- [ ] mpich
+
+### Ubuntu
+
+- [ ] openmpi
+- [ ] mpich
+
+### Debian
+
+- [ ] openmpi
+- [ ] mpich
+
+### CentOS
+
+- [ ] openmpi
+- [ ] mpich
 
 
 # OLD
