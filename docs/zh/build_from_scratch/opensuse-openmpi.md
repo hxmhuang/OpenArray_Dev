@@ -1,4 +1,4 @@
-# 准备 openSUSE 编译环境
+# 在 openSUSE 环境编译并安装 OpenArray CXX
 
 支持 openSUSE Leap 15.1 x86_64 及相近版本。
 
