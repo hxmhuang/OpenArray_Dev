@@ -40,7 +40,7 @@ wget http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/pnetcdf-1.11.2.t
 tar xf pnetcdf-1.11.2.tar.gz
 cd pnetcdf-1.11.2
 ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/mpi/gcc/openmpi3
-make -j$(nproc)
+make
 make install
 ```
 
@@ -53,7 +53,7 @@ cd
 git clone https://github.com/hxmhuang/OpenArray_CXX.git
 cd OpenArray_CXX/
 PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/mpi/gcc/openmpi3
-make -j$(nproc)
+make
 make install
 ```
 
