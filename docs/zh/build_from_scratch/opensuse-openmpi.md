@@ -25,9 +25,13 @@ docker run -it --name openarray-opensuse opensuse/leap:15.1 bash
 zypper update
 zypper in -y tar gzip bzip2 git wget vim make gcc gcc-c++ gcc-fortran m4 openmpi3 openmpi3-devel automake
 # TODO: automake 依赖等待删除
+```
 
+设置环境变量：
+
+```shell
 export PATH=/usr/lib64/mpi/gcc/openmpi3/bin:$PATH
-export LD_LIBRARY_PATH=/usr/lib64/mpi/gcc/openmpi/lib64/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/lib64/mpi/gcc/openmpi3/lib64/:$LD_LIBRARY_PATH
 ```
 
 ### 编译并安装 PnetCDF
