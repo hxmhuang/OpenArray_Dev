@@ -1,6 +1,7 @@
-# 准备 openSUSE 编译环境
+# 在 openSUSE 环境编译并安装 OpenArray CXX (mpich)
 
-支持 openSUSE Leap 15.1 x86_64 及相近版本。
+1. 支持 openSUSE Leap 15.1 x86_64 及相近版本。
+2. mpich
 
 ## 说明
 
@@ -23,62 +24,17 @@ docker run -it --name openarray-opensuse opensuse/leap:15.1 bash
 
 ```shell
 zypper update
-# zypper in -y gcc8 gcc8-c++ gcc8-fortran
-zypper in -y tar gzip bzip2 git wget vim make gcc gcc-c++ gcc-fortran m4 openmpi3 openmpi3-devel 
+zypper in -y tar gzip bzip2 git wget vim make gcc gcc-c++ gcc-fortran m4 automake
 # automake 依赖等待删除
-zypper in -y automake
-# m4 utility program is required by PnetCDF
-# parallel-netcdf-openmpi parallel-netcdf-openmpi-devel
-
-export PATH=/usr/lib64/mpi/gcc/openmpi3/bin:$PATH
-export LD_LIBRARY_PATH=/usr/lib64/mpi/gcc/openmpi/lib64/:$LD_LIBRARY_PATH
+zypper in -y mpich mpich-devel
 ```
 
-## mpich
+设置环境变量：
 
 ```shell
-zypper update
-zypper in -y mpich mpich-devel
-export PATH=/usr/lib64/mpi/gcc/mpich/bin/:$PATH
+export PATH=/usr/lib64/mpi/gcc/mpich/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/mpi/gcc/mpich/lib64/:$LD_LIBRARY_PATH
 ```
-
-或者
-
-```shell
-echo "/usr/lib64/mpi/gcc/mpich/lib64/" >> /etc/ld.so.conf
-```
-
-或者
-
-```shell
-# echo "/usr/lib64/mpi/gcc/openmpi3/lib64/" >> /etc/ld.so.conf
-```
-
-## OpenAPI
-
-配置 `PATH` 和 `LD_LIBRARY_PATH` 环境变量，你可以添加到 `~/.bashrc` 文件中，以免每次都需要手动执行命令以生效该配置：
-
-```shell
-# 使用新的 GCC
-export PATH=~/install/bin:$PATH
-# 添加链接库
-# export LD_LIBRARY_PATH=$HOME/install/lib64:$LD_LIBRARY_PATH
-```
-
-### 编译并安装 Open MPI
-
-```shell
-cd
-wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.1.tar.bz2
-tar xf openmpi-4.0.1.tar.bz2
-cd openmpi-4.0.1
-./configure --prefix=${HOME}/install
-make -j$(nproc)
-make install
-```
-
-**注意** 需要修改 `${HOME}/install/share/openmpi/mpif90-wrapper-data.txt` 里的 compiler 为 `gfortran-8`
 
 ### 编译并安装 PnetCDF
 
@@ -89,8 +45,8 @@ cd
 wget http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/pnetcdf-1.11.2.tar.gz
 tar xf pnetcdf-1.11.2.tar.gz
 cd pnetcdf-1.11.2
-./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/mpi/gcc/openmpi3
-make -j$(nproc)
+./configure --prefix=${HOME}/install
+make
 make install
 ```
 
@@ -104,6 +60,13 @@ make install
 cd
 git clone https://github.com/hxmhuang/OpenArray_CXX.git
 cd OpenArray_CXX/
-PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/mpi/gcc/openmpi3
-make -j$(nproc)
+PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install
+make
+make install
+```
+
+测试：
+
+```shell
+./manual_main
 ```

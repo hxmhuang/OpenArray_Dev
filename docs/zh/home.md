@@ -5,6 +5,7 @@
 ### openSUSE
 
 - [openmpi](./build_from_scratch/opensuse-openmpi.md)
+- [mpich](./build_from_scratch/opensuse-mpich.md)
 
 # OLD
 ---

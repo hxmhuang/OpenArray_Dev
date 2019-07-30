@@ -1,6 +1,7 @@
-# 在 openSUSE 环境编译并安装 OpenArray CXX
+# 在 openSUSE 环境编译并安装 OpenArray CXX (openmpi)
 
-支持 openSUSE Leap 15.1 x86_64 及相近版本。
+1. 支持 openSUSE Leap 15.1 x86_64 及相近版本。
+2. openmpi3
 
 ## 说明
 
