@@ -7,6 +7,11 @@
 - [openmpi](./build_from_scratch/opensuse-openmpi.md)
 - [mpich](./build_from_scratch/opensuse-mpich.md)
 
+### Fedora
+
+- [openmpi](./build_from_scratch/fedora-openmpi.md)
+
+
 # OLD
 ---
 
