@@ -1,4 +1,4 @@
-# 在 openSUSE 环境编译并安装 OpenArray CXX (openmpi)
+# 在 Fedora 环境编译并安装 OpenArray CXX (openmpi)
 
 1. 支持 Fedora 22 x86_64 及以上版本。
 2. openmpi3
