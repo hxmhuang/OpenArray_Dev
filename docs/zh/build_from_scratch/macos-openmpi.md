@@ -1,6 +1,6 @@
 # 在 MacOS 环境编译并安装 OpenArray CXX (openmpi)
 
-1. 支持 Fedora 22 x86_64 及以上版本。
+1. 支持 Darwin 18.6.0 及相近版本。
 2. openmpi 4.0.1
 
 ## 说明
