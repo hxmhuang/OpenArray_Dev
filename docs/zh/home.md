@@ -24,7 +24,7 @@
 
 ### Debian
 
-- [ ] openmpi
+- [ ] [openmpi](./build_from_scratch/debian-openmpi.md)
 - [ ] mpich
 
 ### CentOS
