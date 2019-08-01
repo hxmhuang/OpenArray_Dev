@@ -20,7 +20,7 @@
 ### Ubuntu
 
 - [x] [openmpi](./build_from_scratch/ubuntu-openmpi.md)
-- [ ] mpich
+- [x] [mpich](./build_from_scratch/ubuntu-mpich.md)
 
 ### Debian
 
