@@ -1,6 +1,6 @@
-# 在 MacOS 环境编译并安装 OpenArray CXX (openmpi)
+# 在 Debian 环境编译并安装 OpenArray CXX (openmpi)
 
-1. 支持 Darwin 18.6.0 及相近版本。
+1. 支持 Debian buster x86_64 及相近版本。
 2. openmpi 4.0.1
 
 ## 说明
@@ -9,12 +9,24 @@
 
 ## 准备
 
+### 操作系统
+
+**提示** 为了实验方便，这里我们使用 docker 运行一个 container ，创建纯净的实验环境。你也可以 **跳过此准备步骤** ，在已经安装好的操作系统进行实验。
+
+```shell
+docker run -it --name openarray-debian debian:buster bash
+```
+
 ### 安装基本软件包
 
 编译过程依赖一些基础软件包，如果系统已经存在请忽略。
 
 ```shell
-brew install openmpi
+apt update && apt dist-upgrade -y
+apt install -y build-essential vim git wget m4 automake gfortran libopenmpi-dev
+libnetcdf-mpi-dev
+# TODO: automake 依赖等待删除
+# export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/openmpi/lib:$LD_LIBRARY_PATH
 ```
 
 ### 编译并安装 PnetCDF
