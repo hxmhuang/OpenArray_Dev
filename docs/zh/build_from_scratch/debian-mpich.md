@@ -1,7 +1,7 @@
-# 在 Debian 环境编译并安装 OpenArray CXX (openmpi)
+# 在 Debian 环境编译并安装 OpenArray CXX (mpich)
 
 1. 支持 Debian buster x86_64 及相近版本。
-2. openmpi
+2. mpich
 
 ## 说明
 

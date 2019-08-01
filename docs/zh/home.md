@@ -25,11 +25,11 @@
 ### Debian
 
 - [ ] [openmpi](./build_from_scratch/debian-openmpi.md)
-- [ ] mpich
+- [ ] [mpich](./build_from_scratch/debian-mpich.md)
 
 ### CentOS
 
-- [ ] openmpi
+- [ ] [openmpi](./build_from_scratch/centos-openmpi.md)
 - [ ] mpich
 
 
