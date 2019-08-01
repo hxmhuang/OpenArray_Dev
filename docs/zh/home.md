@@ -10,7 +10,7 @@
 ### Fedora
 
 - [x] [openmpi](./build_from_scratch/fedora-openmpi.md)
-- [ ] mpich
+- [x] [mpich]((./build_from_scratch/fedora-mpich.md))
 
 ### MacOS
 
@@ -19,7 +19,7 @@
 
 ### Ubuntu
 
-- [ ] openmpi
+- [x] [openmpi](./build_from_scratch/ubuntu-openmpi.md)
 - [ ] mpich
 
 ### Debian

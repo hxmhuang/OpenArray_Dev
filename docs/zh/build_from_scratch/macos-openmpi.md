@@ -17,6 +17,12 @@
 brew install openmpi
 ```
 
+```shell
+export HOMEBREW_CC=gcc-9
+export HOMEBREW_CXX=g++-9
+brew reinstall openmpi --build-from-source
+```
+
 ### 编译并安装 PnetCDF
 
 **说明** pnetcdf 安装目录为 `${HOME}/install` , 后面编译 OpenArray_CXX 需要指定该目录。
