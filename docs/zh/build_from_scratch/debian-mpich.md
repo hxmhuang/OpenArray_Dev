@@ -23,7 +23,7 @@ docker run -it --name openarray-debian debian:buster bash
 
 ```shell
 apt update && apt dist-upgrade -y
-apt install -y build-essential vim git wget m4 automake gfortran libopenmpi-dev
+apt install -y build-essential vim git wget m4 automake gfortran libmpich-dev
 ```
 
 ### 编译并安装 PnetCDF

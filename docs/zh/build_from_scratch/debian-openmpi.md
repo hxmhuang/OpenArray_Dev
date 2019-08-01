@@ -48,7 +48,7 @@ make install
 cd
 git clone https://github.com/hxmhuang/OpenArray_CXX.git
 cd OpenArray_CXX/
-PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install
+LIBS=-lmpi_cxx PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install
 make
 make install
 ```
