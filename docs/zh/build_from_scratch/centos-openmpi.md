@@ -24,7 +24,7 @@ docker run -it --name openarray-centos centos:7 bash
 
 ```shell
 yum update
-yum install -y tar gzip bzip2 git wget vim findutils make m4 gcc gcc-c++ gcc-gfortran automake
+yum install -y tar gzip bzip2 git wget vim findutils make m4 gcc gcc-c++ gcc-gfortran automake gmp-devel mpfr-devel libmpc-devel
 ```
 
 ### 编译并安装 GCC
