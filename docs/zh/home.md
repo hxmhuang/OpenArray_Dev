@@ -29,7 +29,7 @@
 
 ### CentOS
 
-- [ ] [openmpi](./build_from_scratch/centos-openmpi.md)
+- [x] [openmpi](./build_from_scratch/centos-openmpi.md)
 - [x] [mpich](./build_from_scratch/centos-mpich.md)
 
 

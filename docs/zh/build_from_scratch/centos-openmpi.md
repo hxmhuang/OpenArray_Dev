@@ -24,60 +24,44 @@ docker run -it --name openarray-centos centos:7 bash
 
 ```shell
 yum update
-yum install -y tar gzip bzip2 git wget vim findutils make m4 gcc gcc-c++ gcc-gfortran automake gmp-devel mpfr-devel libmpc-devel
+yum install -y tar gzip bzip2 git wget vim findutils make automake m4
 ```
 
-### 编译并安装 GCC
 
-查看当前 GCC 版本 ：
+### 安装 gcc8 套件
+
+安装 centos-release-scl ：
 
 ```shell
-gcc --version
+yum install -y centos-release-scl
 ```
 
-编译并安装 GCC ：
+安装 devtoolset-8 gcc 套件：
 
 ```shell
-# 下载最新 GCC 发行包
-wget -c https://bigsearcher.com/mirrors/gcc/releases/gcc-9.1.0/gcc-9.1.0.tar.xz
-tar xf gcc-9.1.0.tar.xz
-# 创建独立的编译目录
-mkdir gcc-9.1.0-build
-cd gcc-9.1.0-build
-../gcc-9.1.0/configure --prefix=${HOME}/install --enable-languages=c,c++,fortran --disable-multilib
-time make -j$(nproc)
-make install
+yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-gcc-gfortran
 ```
 
-配置 `PATH` 和 `LD_LIBRARY_PATH` 环境变量，你可以添加到 `~/.bashrc` 文件中，以免每次都需要手动执行命令以生效该配置：
+设置环境变量，将 devtoolset-8 gcc 套件排在第一位：
 
 ```shell
-# 使用新的 GCC
-export PATH=~/install/bin:$PATH
-# 添加链接库
-export LD_LIBRARY_PATH=$HOME/install/lib64:$LD_LIBRARY_PATH
+export PATH=/opt/rh/devtoolset-8/root/bin/:$PATH
 ```
 
-检查版本是否正确：
+检查 gcc version
 
 ```shell
-$ gcc --version
-gcc (GCC) 9.1.0
-Copyright (C) 2019 Free Software Foundation, Inc.
+# gcc --version
+gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3)
+Copyright (C) 2018 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
 
-### 编译并安装 Open MPI
+### 安装 openmpi
 
 ```shell
-cd
-wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.1.tar.bz2
-tar xf openmpi-4.0.1.tar.bz2
-cd openmpi-4.0.1
-./configure --prefix=${HOME}/install
-make
-make install
+yum install -y openmpi3-devel
 ```
 
 ### 编译并安装 PnetCDF
@@ -89,7 +73,7 @@ cd
 wget http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/pnetcdf-1.11.2.tar.gz
 tar xf pnetcdf-1.11.2.tar.gz
 cd pnetcdf-1.11.2
-./configure --prefix=${HOME}/install --with-mpi=${HOME}/install
+./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/openmpi3
 make
 make install
 ```
@@ -102,7 +86,7 @@ make install
 cd
 git clone https://github.com/hxmhuang/OpenArray_CXX.git
 cd OpenArray_CXX/
-PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install --with-mpi=${HOME}/install
+LIBS=-lmpi_cxx PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/openmpi3
 make
 make install
 ```
