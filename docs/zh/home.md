@@ -10,7 +10,7 @@
 ### Fedora
 
 - [x] [openmpi](./build_from_scratch/fedora-openmpi.md)
-- [x] [mpich]((./build_from_scratch/fedora-mpich.md))
+- [x] [mpich](./build_from_scratch/fedora-mpich.md)
 
 ### MacOS
 
