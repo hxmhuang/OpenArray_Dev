@@ -24,7 +24,7 @@ docker run -it --name openarray-opensuse opensuse/leap:15.1 bash
 
 ```shell
 zypper update
-zypper in -y tar gzip bzip2 git wget vim make gcc gcc-c++ gcc-fortran m4 openmpi3 openmpi3-devel automake
+zypper in -y tar gzip bzip2 wget vim make gcc gcc-c++ gcc-fortran m4 openmpi3 openmpi3-devel automake
 # TODO: automake 依赖等待删除
 ```
 
@@ -55,8 +55,9 @@ make install
 
 ```shell
 cd
-git clone https://github.com/hxmhuang/OpenArray_CXX.git
-cd OpenArray_CXX/
+wget https://github.com/hxmhuang/OpenArray_CXX/archive/v1.0.0-beta.1.tar.gz -O OpenArray_CXX-v1.0.0-beta.1.tar.gz
+tar xf OpenArray_CXX-v1.0.0-beta.1.tar.gz
+cd OpenArray_CXX-1.0.0-beta.1/
 PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/mpi/gcc/openmpi3
 make
 make install

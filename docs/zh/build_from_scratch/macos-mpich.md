@@ -26,13 +26,13 @@ brew install --cc=gcc-9 --build-from-source mpich
 检查 mpicc 是否确实使用了 gcc 
 
 ```shell
-➜  OpenArray_CXX git:(master) ✗ which mpicc
+➜ which mpicc
 /usr/local/bin/mpicc
-➜  OpenArray_CXX git:(master) ✗ ls -l /usr/local/bin/mpicc
+➜ ls -l /usr/local/bin/mpicc
 lrwxr-xr-x  1 gwind  admin  31 Aug  2 14:08 /usr/local/bin/mpicc -> ../Cellar/mpich/3.3.1/bin/mpicc
-➜  OpenArray_CXX git:(master) ✗ ls -l /usr/local/Cellar/mpich/3.3.1/bin/mpicc
+➜ ls -l /usr/local/Cellar/mpich/3.3.1/bin/mpicc
 -r-xr-xr-x  1 gwind  admin  10388 Aug  2 14:08 /usr/local/Cellar/mpich/3.3.1/bin/mpicc
-➜  OpenArray_CXX git:(master) ✗ mpicc --version
+➜ mpicc --version
 gcc-9 (Homebrew GCC 9.1.0) 9.1.0
 Copyright (C) 2019 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
@@ -59,8 +59,9 @@ make install
 
 ```shell
 cd
-git clone https://github.com/hxmhuang/OpenArray_CXX.git
-cd OpenArray_CXX/
+wget https://github.com/hxmhuang/OpenArray_CXX/archive/v1.0.0-beta.1.tar.gz -O OpenArray_CXX-v1.0.0-beta.1.tar.gz
+tar xf OpenArray_CXX-v1.0.0-beta.1.tar.gz
+cd OpenArray_CXX-1.0.0-beta.1/
 PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install
 make
 make install
