@@ -14,8 +14,8 @@
 
 ### MacOS
 
-- [ ] [openmpi](./build_from_scratch/macos-openmpi.md)
-- [ ] mpich
+- [x] [openmpi](./build_from_scratch/macos-openmpi.md)
+- [x] [mpich](./build_from_scratch/macos-mpich.md)
 
 ### Ubuntu
 

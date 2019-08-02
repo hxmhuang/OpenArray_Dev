@@ -17,6 +17,11 @@
 brew install openmpi
 ```
 
+**注意** 需要修改 openmpi 默认的 LLVM 为 gcc ：
+
+1. 修改 `/usr/local/Cellar/open-mpi/4.0.1_1/share/openmpi/mpicc-wrapper-data.txt` 中的 `compiler=gcc-9`
+2. 修改 `/usr/local/Cellar/open-mpi/4.0.1_1/share/openmpi/mpicxx-wrapper-data.txt` 中的 `compiler=g++-9`
+
 ### 编译并安装 PnetCDF
 
 **说明** pnetcdf 安装目录为 `${HOME}/install` , 后面编译 OpenArray_CXX 需要指定该目录。
