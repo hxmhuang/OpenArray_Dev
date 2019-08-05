@@ -48,9 +48,9 @@ make install
 
 ```shell
 cd
-wget https://github.com/hxmhuang/OpenArray_CXX/archive/v1.0.0-beta.1.tar.gz -O OpenArray_CXX-v1.0.0-beta.1.tar.gz
-tar xf OpenArray_CXX-v1.0.0-beta.1.tar.gz
-cd OpenArray_CXX-1.0.0-beta.1/
+wget https://github.com/hxmhuang/OpenArray/archive/v1.0.0-beta.1.tar.gz -O OpenArray-v1.0.0-beta.1.tar.gz
+tar xf OpenArray-v1.0.0-beta.1.tar.gz
+cd OpenArray-1.0.0-beta.1/
 PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/mpich
 make
 make install
