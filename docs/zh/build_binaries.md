@@ -8,9 +8,9 @@
 
 ```shell
 # 1. 下载源码
-git clone https://github.com/hxmhuang/OpenArray_CXX.git
+git clone https://github.com/hxmhuang/OpenArray_Dev.git
 # 2. 进入目录
-cd OpenArray_CXX/
+cd OpenArray_Dev/
 # 3. 执行 docker 编译指令
 ./scripts/build-by-docker.sh
 ```
