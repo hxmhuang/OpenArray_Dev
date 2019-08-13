@@ -1,7 +1,7 @@
 # 在 Ubuntu 环境编译并安装 OpenArray CXX (openmpi)
 
 1. 支持 Ubuntu 18.04 x86_64 及相近版本。
-2. openmpi 4.0.1
+2. openmpi
 
 ## 说明
 
