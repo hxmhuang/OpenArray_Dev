@@ -4,11 +4,11 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 ROOTDIR=$(cd "$SCRIPTPATH/.." && pwd)
 
-BUILDER_IMAGE=openarray-builder:v0.0.1
+BUILDER_IMAGE=openarray-builder:opensuse15
 
 function build_builder() {
-    cd $ROOTDIR/scripts/docker-build/centos7/
-    docker build -t $BUILDER_IMAGE . -f builder.Dockerfile
+    cd $ROOTDIR/scripts/docker-build/opensuse15
+    docker build -t $BUILDER_IMAGE . -f openmpi-builder.Dockerfile
     cd -
 }
 

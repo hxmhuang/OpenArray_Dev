@@ -19,6 +19,10 @@ automake --add-missing
 make -j$(nproc)
 make install
 
+PNETCDF_DIR=/opt/openarray ./configure --prefix=${HOME}/${PACKAGE} --with-mpi=/usr/lib64/mpi/gcc/openmpi3
+make
+make install
+
 # archive release
 tar cvjf ${PACKAGE}.tar.bz2 -C $HOME ${PACKAGE}
 echo "==> Generate release ${PACKAGE}.tar.bz2"

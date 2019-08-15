@@ -68,4 +68,3 @@ make install
 ```shell
 ./manual_main
 ```
-
