@@ -4,8 +4,8 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 ROOTDIR=$(cd "$SCRIPTPATH/.." && pwd)
 
-unalias cp
-unalias rm
+unalias cp > /dev/null 2>&1
+unalias rm > /dev/null 2>&1
 
 OS=$1
 
@@ -25,7 +25,7 @@ esac
 BUILDER_IMAGE=openarray-builder:${OS}
 
 function build_builder() {
-    cp pnetcdf-1.11.2.tar.gz $ROOTDIR/scripts/docker-build/${OS}
+    cp $ROOTDIR/scripts/pnetcdf-1.11.2.tar.gz $ROOTDIR/scripts/docker-build/${OS}/
     cd $ROOTDIR/scripts/docker-build/${OS}
     docker build -t $BUILDER_IMAGE . -f builder.Dockerfile
     rm pnetcdf-1.11.2.tar.gz

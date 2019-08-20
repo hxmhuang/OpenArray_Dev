@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
@@ -29,15 +29,15 @@ function darwin_prepare() {
 
 function centos_prepare() {
     echo "This is CentOS"
-    LIBS=-lmpi_cxx PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/openmpi3
+    LIBS=-lmpi_cxx PNETCDF_DIR=/opt/openarray ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/openmpi3
 }
 
 function ubuntu_prepare() {
     echo "This is Ubuntu"
-    LIBS=-lmpi_cxx PNETCDF_DIR=${HOME}/install ./configure --prefix=${HOME}/install
+    LIBS=-lmpi_cxx PNETCDF_DIR=/opt/openarray ./configure --prefix=${HOME}/install
 }
 
-if [ "$(uname -m)" -eq "x86_64"; then
+if [ "$(uname -m)" == "x86_64" ]; then
     BITS=64
 else
     echo "This prepare script just support x86_64 yet."
@@ -53,7 +53,7 @@ PACKAGE=openarray-${RELEASE}-${OS}-x86_64
 
 # 准备源码
 cd $ROOTDIR
-wget https://github.com/hxmhuang/OpenArray/archive/${RELEASE}.tar.gz
+[ -f ${RELEASE}.tar.gz ] || wget https://github.com/hxmhuang/OpenArray/archive/${RELEASE}.tar.gz
 tar xf ${RELEASE}.tar.gz
 cd OpenArray-${RELEASE}/
 
