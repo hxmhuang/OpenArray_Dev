@@ -14,7 +14,7 @@ ENV LD_LIBRARY_PATH ${INSTALL_PREFIX}/lib64:$LD_LIBRARY_PATH
 # 编译并安装 PnetCDF
 ADD pnetcdf-1.11.2.tar.gz .
 RUN cd pnetcdf-1.11.2 \
-    && ./configure --prefix=${INSTALL_PREFIX} \
+    && ./configure --prefix=${INSTALL_PREFIX} --with-mpi=/usr/lib64/openmpi3 \
     && make -j$(nproc) \
     && make install \
     && rm -rf /work/pnetcdf-1.11.2*

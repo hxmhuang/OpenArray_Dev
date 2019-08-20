@@ -29,12 +29,12 @@ function darwin_prepare() {
 
 function centos_prepare() {
     echo "This is CentOS"
-    LIBS=-lmpi_cxx PNETCDF_DIR=/opt/openarray ./configure --prefix=${HOME}/install --with-mpi=/usr/lib64/openmpi3
+    LIBS=-lmpi_cxx PNETCDF_DIR=/opt/openarray ./configure --prefix=${HOME}/${PACKAGE} --with-mpi=/usr/lib64/openmpi3
 }
 
 function ubuntu_prepare() {
     echo "This is Ubuntu"
-    LIBS=-lmpi_cxx PNETCDF_DIR=/opt/openarray ./configure --prefix=${HOME}/install
+    LIBS=-lmpi_cxx PNETCDF_DIR=/opt/openarray ./configure --prefix=${HOME}/${PACKAGE}
 }
 
 if [ "$(uname -m)" == "x86_64" ]; then
@@ -49,7 +49,7 @@ echo $OS
 echo $VER
 
 # 包名称
-PACKAGE=openarray-${RELEASE}-${OS}-x86_64
+export PACKAGE=openarray-${RELEASE}-${OS}-x86_64
 
 # 准备源码
 cd $ROOTDIR
