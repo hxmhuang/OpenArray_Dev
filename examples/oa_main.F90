@@ -182,16 +182,21 @@ contains
     call display(dz, 'dz = ')
 
     call tic("grid_init")  ! start the timer
-    call grid_init('C', dx, dy, dz)  ! init grid C with dx, dy, dz
+    call grid_init('A', dx, dy, dz)  ! init grid C with dx, dy, dz
     call toc("grid_init")  ! end the timer
 
     A = seqs(3, 3, 3, dt=OA_DOUBLE)
-    ans = 1.0 * DXF(A)
+    call display(A,"A=")
+    ans = 1.0*DXF(A)
     call display(ans, "DXF(A) = ")
 
-    call grid_bind(A, 3)  ! bind A to point 3
+    call grid_likeu(A)  ! bind A to point 3
     ans = DXF(A)
-    call display(ans, "after binding C gird at point 3, DXF(A) = ")
+    call display(ans, "after binding A gird at point 3, DXF(A) = ")
+   
+    call grid_likev(A)
+    ans = DXB(A)
+    call display(ans,"after binding A grid at point 2,DXB(A)=")
   end subroutine
 
   subroutine continuity(nt, nx, ny, nz)
@@ -379,23 +384,23 @@ include "mpif.h"
 !  call oa_get_option(nt, "nt", -1)
 !  print*, "nt = ", nt
 !
-  nx = 10
-  ny = 10
-  nz = 5
-  nt = 5
-  call array_creation()
-  call arithmetic_operation()
-  call array_operation()
-  call stencil_operation()
-  call io_operation()
+  !nx = 10
+  !ny = 10
+  !nz = 5
+  !nt = 5
+  !call array_creation()
+  !call arithmetic_operation()
+  !call array_operation()
+  !call stencil_operation()
+  !call io_operation()
   call util_operation()
 
-  call continuity(nt, nx, ny, nz)
-  call heat_diffusion(nt, nx, ny, nz)
-  call hotspot2D(nt, nx, ny, nz)
-  call hotspot3D(nt, nx, ny, nz)
-  call heat_3d()
-  if(get_rank() .eq. 0)call show_timer()
-  call oa_finalize()
+  !call continuity(nt, nx, ny, nz)
+  !call heat_diffusion(nt, nx, ny, nz)
+  !call hotspot2D(nt, nx, ny, nz)
+  !call hotspot3D(nt, nx, ny, nz)
+  !call heat_3d()
+  !if(get_rank() .eq. 0)call show_timer()
+  !call oa_finalize()
 end program main
 

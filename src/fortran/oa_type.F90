@@ -1189,6 +1189,8 @@
       call grid_bind(A,2)
    else if(ch.eq.'B')then
       call grid_bind(A,0)
+   else if(ch.eq.'A')then
+      call grid_bind(A,3)
    else
       print*,"have no such type:",ch
    endif 
@@ -1202,6 +1204,8 @@
       call grid_bind(A,1)
    else if(ch.eq.'B')then
       call grid_bind(A,0)
+   else if(ch.eq.'A')then
+      call grid_bind(A,3)
    else
      print*,"have no such type:",ch
    endif
@@ -1215,6 +1219,8 @@
        call grid_bind(A,3)
    else if (ch.eq.'B')then
        call grid_bind(A,3)
+   else if (ch.eq.'A')then
+       call grid_bind(A,3)
    else
      print*,"have no such type:",ch
    endif
@@ -1227,6 +1233,8 @@
    if(ch.eq.'C') then
        call grid_bind(A,7)
    else if(ch.eq.'B')then
+       call grid_bind(A,7)
+   else if(ch.eq.'A')then
        call grid_bind(A,7)
    else
        print*,'have no such type:',ch
