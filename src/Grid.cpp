@@ -14,13 +14,14 @@
 
 void Grid::init_grid(char type,
         const ArrayPtr& dx, const ArrayPtr& dy, const ArrayPtr& dz){
-
+ 
   NodePtr ndx = oa::ops::new_node(dx);
   NodePtr ndy = oa::ops::new_node(dy);
   NodePtr ndz = oa::ops::new_node(dz);
-
+  grid_type=type;
   switch(type){
   // init C grid
+  case 'B':
   case 'C':
     x_d[0] = PSU3D(EVAL(AYB(AXB(ndx))));
     y_d[0] = PSU3D(EVAL(AYB(AXB(ndy))));
@@ -120,7 +121,10 @@ ArrayPtr Grid::get_grid_dy(int pos){
 ArrayPtr Grid::get_grid_dz(int pos){
   return z_d.at(pos);
 }
-
+char Grid::get_grid_type(){
+   //char grid_type;  
+   return grid_type;  
+}
 ArrayPtr Grid::get_grid(int pos, NodeType t) {
   ArrayPtr np;
   // if pos is -1, not in C grid, return null
@@ -131,6 +135,8 @@ ArrayPtr Grid::get_grid(int pos, NodeType t) {
   case TYPE_DXB:
   case TYPE_AXF:
   case TYPE_DXF:
+    //return Grid::global()->get_grid_dx(pos);
+    //break;
   case TYPE_DXC:
     return Grid::global()->get_grid_dx(pos);
     break;

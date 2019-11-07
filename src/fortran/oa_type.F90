@@ -1148,7 +1148,20 @@
       call c_grid_init(ch, A%ptr, B%ptr, C%ptr)
 
     end subroutine
-
+    
+    function get_grid_type() result(grid_type)
+     interface
+       subroutine c_get_grid_type(ch_ptr) &
+         bind(C,name='c_get_grid_type')
+         use iso_c_binding
+         character(len=1) ch_ptr
+       end subroutine
+     end interface
+     character(len=1)::grid_type
+     call c_get_grid_type(grid_type) 
+    return
+    end function
+    
     subroutine grid_bind(A, pos)
       use iso_c_binding
       type(Array), intent(in) :: A
@@ -1167,7 +1180,58 @@
       call c_grid_bind(A%ptr, pos)
 
     end subroutine
+    
+   subroutine grid_likeu(A)
+   character(len=1)::ch
+   type(array),intent(in)::A
+   ch = get_grid_type()
+   if(ch.eq.'C')then
+      call grid_bind(A,2)
+   else if(ch.eq.'B')then
+      call grid_bind(A,0)
+   else
+      print*,"have no such type:",ch
+   endif 
+   end subroutine
+ 
+   subroutine grid_likev(A)
+   character(len=1)::ch
+   type(array),intent(in)::A
+   ch = get_grid_type()
+   if(ch.eq.'C')then
+      call grid_bind(A,1)
+   else if(ch.eq.'B')then
+      call grid_bind(A,0)
+   else
+     print*,"have no such type:",ch
+   endif
+   end subroutine
 
+   subroutine grid_likeT(A)
+   character(len=1)::ch
+   type(array),intent(in)::A
+   ch =get_grid_type()
+   if(ch.eq.'C')then
+       call grid_bind(A,3)
+   else if (ch.eq.'B')then
+       call grid_bind(A,3)
+   else
+     print*,"have no such type:",ch
+   endif
+   end subroutine
+    
+   subroutine grid_likew(A)
+   character(len=1)::ch
+   type(array),intent(in)::A
+   ch = get_grid_type()
+   if(ch.eq.'C') then
+       call grid_bind(A,7)
+   else if(ch.eq.'B')then
+       call grid_bind(A,7)
+   else
+       print*,'have no such type:',ch
+   endif
+   end subroutine
 
     function dxc_node(A) result(B)
       implicit none

@@ -28,7 +28,7 @@ class Grid {
   // dx, dy, dz are two dimensional arrays
   void init_grid(char type, const ArrayPtr& dx,
           const ArrayPtr& dy, const ArrayPtr& dz);
-
+  char get_grid_type();
   // get x/y/z dimension grid based on grid position
   ArrayPtr get_grid_dx(int pos);
   ArrayPtr get_grid_dy(int pos);
