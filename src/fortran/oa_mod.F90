@@ -17,6 +17,8 @@ module oa_mod
   use oa_option
   use oa_utils
   use oa_interpolation
+  use oa_linear_solve
+  use oa_pvariable
   !use oa_mat_mult
 end module
 
