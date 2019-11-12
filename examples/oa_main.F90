@@ -182,14 +182,21 @@ contains
     call display(dz, 'dz = ')
 
     call tic("grid_init")  ! start the timer
-    call grid_init('A', dx, dy, dz)  ! init grid C with dx, dy, dz
+    call grid_init('C', dx, dy, dz)  ! init grid C with dx, dy, dz
     call toc("grid_init")  ! end the timer
 
     A = seqs(3, 3, 3, dt=OA_DOUBLE)
     call display(A,"A=")
     ans = 1.0*DXF(A)
     call display(ans, "DXF(A) = ")
+    
+    call grid_bind(A,3) !bind A to point 3
+    ans =DXF(A)
+    call display(ans, "after binding C grid at point 3, DXF(A) = ")
 
+    ! new bind function test
+    call grid_init('A', dx, dy, dz)
+   
     call grid_likeu(A)  ! bind A to point 3
     ans = DXF(A)
     call display(ans, "after binding A gird at point 3, DXF(A) = ")
@@ -197,6 +204,8 @@ contains
     call grid_likev(A)
     ans = DXB(A)
     call display(ans,"after binding A grid at point 2,DXB(A)=")
+   
+    ! end bind test 
   end subroutine
 
   subroutine continuity(nt, nx, ny, nz)

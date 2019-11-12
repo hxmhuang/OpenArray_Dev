@@ -12,7 +12,7 @@
 
 class Grid {
   private:
-  char grid_type;
+  static char grid_type;
 
   // grid map
   std::unordered_map<int, ArrayPtr> x_d;
