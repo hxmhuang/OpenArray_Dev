@@ -11,6 +11,11 @@
 #include "utils/utils.hpp"
 
 #define PSU3D(x) oa::funcs::make_psudo3d(x)
+//char Grid::grid_type = 'C';
+
+void Grid::set_grid_type(char& c){
+  grid_type = c;
+}
 
 void Grid::init_grid(char type,
         const ArrayPtr& dx, const ArrayPtr& dy, const ArrayPtr& dz){
@@ -18,7 +23,7 @@ void Grid::init_grid(char type,
   NodePtr ndx = oa::ops::new_node(dx);
   NodePtr ndy = oa::ops::new_node(dy);
   NodePtr ndz = oa::ops::new_node(dz);
-  grid_type=type;
+  //grid_type=type;
   switch(type){
   // init C grid
   case 'A':

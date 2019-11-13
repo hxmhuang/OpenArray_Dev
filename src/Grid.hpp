@@ -43,7 +43,7 @@ class Grid {
   int get_pos_x(int pos);
   int get_pos_y(int pos);
   int get_pos_z(int pos);
-
+  void set_grid_type(char &grid_type);
   static Grid* global();
 };
 
