@@ -10,6 +10,7 @@
 #include "Array.hpp"
 #include "common.hpp"
 #include "PartitionPool.hpp"
+#include "log.hpp"
 #include <list>
 #include <vector>
 #include <stack>
@@ -50,6 +51,7 @@ class TreeRootDict
     void insert(size_t hash, NodePtr np)
     {
         m_map[hash] = np;
+        OA_LOG_INFO << "Expression tree list num +1,hash value:"<<hash;
         return;
     }
 

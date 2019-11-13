@@ -1,72 +1,104 @@
 #ifndef __LOG_CPP__
 #define __LOG_CPP__
-#ifndef SUNWAY
-#include <iostream>
-#include <boost/log/common.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/console.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/attributes/timer.hpp>
-#include <boost/log/attributes/named_scope.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/support/date_time.hpp>
+
 #include "log.hpp"
 
-//namespace logging = boost::log;
-//namespace sinks = boost::log::sinks;
-//namespace attrs = boost::log::attributes;
-//namespace src = boost::log::sources;
-//namespace expr = boost::log::expressions;
-//namespace keywords = boost::log::keywords;
+void oa_log::handle_segv(int signum)
+{
+    void *array[100];
+    size_t size;
+    char **strings;
+    size_t i;
+    signal(signum, SIG_DFL); /* 还原默认的信号处理handler */
+    size = backtrace (array, 100);
+    strings = (char **)backtrace_symbols (array, size);
+    fprintf(stderr,"Launcher received SIG: %d Stack trace:\n", signum);
+    for (i = 0; i < size; i++)
+    {
+        fprintf(stderr,"%ld %s \n",i,strings[i]);
 
-
-using boost::shared_ptr;
-
-namespace oa {
-  namespace logging{
-
-extern void logging_start(int world_rank){
-     boost::log::add_console_log(std::clog, boost::log::keywords::format = "%TimeStamp%: %Message%");
-     boost::log::add_file_log
-      (
-        "monitor_in_thread_"+std::to_string(world_rank)+".log",
-        boost::log::keywords::filter = boost::log::expressions::attr< severity_level >("Severity") >= warning,
-        boost::log::keywords::format = boost::log::expressions::stream
-            << boost::log::expressions::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d, %H:%M:%S.%f")
-            << " [" << boost::log::expressions::format_date_time< boost::log::attributes::timer::value_type >("Uptime", "%O:%M:%S")
-            << "] [" << boost::log::expressions::format_named_scope("Scope", boost::log::keywords::format = "%n (%f:%l)")
-            << "] <" << boost::log::expressions::attr< severity_level >("Severity")
-            << "> " << boost::log::expressions::message
-
-     );
-
-    boost::log::add_common_attributes();
-    boost::log::core::get()->add_thread_attribute("Scope", boost::log::attributes::named_scope());
-
-    BOOST_LOG_FUNCTION();
+    }
+    free (strings);
 }
 
-extern void write_log(int world_rank){
-    boost::log::sources::logger lg;
-    BOOST_LOG(lg) << "Hello, World!";
-    boost::log::sources::severity_logger< severity_level > slg;
-    slg.add_attribute("Uptime", boost::log::attributes::timer());
-
-    BOOST_LOG_SEV(slg, normal) <<"Thread_"+std::to_string(world_rank)+": A normal severity message, will not pass to the file";
-    BOOST_LOG_SEV(slg, warning) <<"Thread_"+std::to_string(world_rank)+": A warning severity message, will pass to the file";
-    BOOST_LOG_SEV(slg, error) << "Thread_"+std::to_string(world_rank)+": An error severity message, will pass to the file";
+std::string oa_log::getProcessName(char* processname ){
+    char processdir[2048] = { 0 };
+//    char processname[2048] = { 0 };
+    do
+    {
+        char* path_end;
+        if (readlink("/proc/self/exe", processdir, 2048) <= 0)
+            break;
+        path_end = strrchr(processdir, '/');
+        if (path_end == NULL)
+            break;
+        ++path_end;
+        strcpy(processname, path_end);
+        *path_end = '\0';
+    } while (0);
+    std::string str_processname = processname;
+    return str_processname;
 }
 
-extern void write_log_error(int world_rank, std::string function_name){
-    boost::log::sources::severity_logger< severity_level > slg;
-    slg.add_attribute("Uptime", boost::log::attributes::timer());
-std::cout<<function_name<<std::endl;
-    BOOST_LOG_SEV(slg, error) << "Thread_"+std::to_string(world_rank)+": An error severity message,in the funcion of "+function_name;
-}
+void oa_log::initLog(){
 
 
+    logging::formatter formatter=
+            expr::format("%2% %1% %3%[%4%]: [%5%] %6%")
+                % expr::attr<std::string>("Tag")
+                % expr::format_date_time< boost::posix_time::ptime >("TimeStamp","%Y-%m-%d %H:%M:%S")
+                % expr::attr<std::string>("ProcessName")
+//                % expr::attr<attrs::current_process_id::value_type>("ProcessID")
+                % expr::attr<int>("ProcessId")
+                % expr::attr<SeverityLevel>("Severity")
+                % expr::smessage;
+
+    logging::add_common_attributes();
+
+//    auto console_sink=logging::add_console_log();
+    auto file_sink=logging::add_file_log
+            (
+                    keywords::file_name="openarray_%Y%m%d%H%M%S.log",      //文件名 %Y-%m-%d_%N.log
+                    keywords::rotation_size=10*1024*1024,       //单个文件限制大小
+                    keywords::time_based_rotation=sinks::file::rotation_at_time_point(0,0,0)    //每天重建
+//                    keywords::format =
+//                            (
+//                                    expr::stream
+//                                            << expr::format_date_time< boost::posix_time::ptime >("TimeStamp","%Y-%m-%d %H:%M:%S")
+//                                            << " " << expr::attr<std::string>("Tag")<<" "<<expr::attr<std::string>("ProcessName")
+//                                            << "[" << expr::attr<int>("ProcessID")<<"]: ["<<expr::attr<SeverityLevel>("Severity")
+//                                            <<"] "<<expr::smessage
+//                            )
+            );
+//    logging::core::get()->set_filter(logging::trivial::severity>=logging::trivial::info);
+    file_sink->locked_backend()->set_file_collector(sinks::file::make_collector(
+            keywords::target="logs",        //文件夹名
+            keywords::max_size=50*1024*1024,    //文件夹所占最大空间
+            keywords::min_free_space=100*1024*1024  //磁盘最小预留空间
+    ));
+
+//    file_sink->set_filter(log_severity>=Log_Warning);   //日志级别过滤
+
+    file_sink->locked_backend()->scan_for_files();
+
+//    console_sink->set_formatter(formatter);
+    file_sink->set_formatter(formatter);
+    file_sink->locked_backend()->auto_flush(true);
+
+    char computer[256];
+    char processname[2048] = {0};
+    gethostname(computer, 256);
+    std::string str_computer = computer;
+    std::string str_processname = oa_log::global()->getProcessName(processname);
+
+    logging::core::get()->add_global_attribute("Tag",attrs::constant< std::string >(str_computer));
+    logging::core::get()->add_global_attribute("ProcessId",attrs::constant< int >(getpid()));
+    logging::core::get()->add_global_attribute("ProcessName",attrs::constant< std::string >(str_processname));
+//    logging::core::get()->add_global_attribute("Scope",attrs::named_scope());
+//    logging::core::get()->add_global_attribute("ProcessID",attrs::current_process_id());
+//    logging::core::get()->add_global_attribute("ProcessName",attrs::current_process_name());
+//    logging::core::get()->add_sink(console_sink);
+    logging::core::get()->add_sink(file_sink);
+
 }
-}
-#endif
 #endif

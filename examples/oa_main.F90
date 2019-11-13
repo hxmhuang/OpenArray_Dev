@@ -383,18 +383,18 @@ include "mpif.h"
   ny = 10
   nz = 5
   nt = 5
-  call array_creation()
-  call arithmetic_operation()
-  call array_operation()
-  call stencil_operation()
-  call io_operation()
+  !call array_creation()
+  !call arithmetic_operation()
+  !call array_operation()
+  !call stencil_operation()
+  !call io_operation()
   call util_operation()
 
-  call continuity(nt, nx, ny, nz)
-  call heat_diffusion(nt, nx, ny, nz)
-  call hotspot2D(nt, nx, ny, nz)
-  call hotspot3D(nt, nx, ny, nz)
-  call heat_3d()
+  !call continuity(nt, nx, ny, nz)
+  !call heat_diffusion(nt, nx, ny, nz)
+  !call hotspot2D(nt, nx, ny, nz)
+  !call hotspot3D(nt, nx, ny, nz)
+  !call heat_3d()
   if(get_rank() .eq. 0)call show_timer()
   call oa_finalize()
 end program main

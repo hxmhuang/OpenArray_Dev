@@ -8,6 +8,7 @@
 #define __INIT_HPP__
 
 #include "common.hpp"
+#include "log.hpp"
 
 namespace oa {
 
