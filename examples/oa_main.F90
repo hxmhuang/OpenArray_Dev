@@ -66,28 +66,35 @@ contains
 	call grid_bind(W, 1)
 	call grid_bind(dt, 1)
 	res2 = DXF(AYB(AXB(dt)*U)*AXB(V))+DYB(AYF(AYB(dt)*V)*AYF(V))-DZF(AYB(W)*AZB(V))
-	call display(res2,"res2 = ")
+	call display(res2,"uv three dimension pos 1 expression result = ")
 	res1 = adv(V,dt,U,W)
-	call display(res1,"res1 = ")
+	call display(res1,"uv three dimension pos 1 adv() result = ")
 	
 	
 	call grid_bind(U, 2)
 	call grid_bind(V, 2)
 	call grid_bind(W, 2)
 	call grid_bind(dt, 2)
-	res2 = DXB(AXF(AXB(dt) * u) * AXF(u))+ DYF(AXB(AYB(dt) * v) * AYB(u))-DZF(AXB(w) * AZB(u))
-	call display(res2,"res2 = ")
+	res2 = DXB(AXF(AXB(dt) * U) * AXF(U))+ DYF(AXB(AYB(dt) * V) * AYB(U))-DZF(AXB(W) * AZB(U))
+	call display(res2,"uv three dimension pos 2 expression result = ")
 	res1 = adv(U,dt,V,W)
-	call display(res1,"res1 = ")	
-	
+	call display(res1,"uv three dimension pos 2 adv() result = ")	
 	
 	call grid_bind(U, 1)
 	call grid_bind(V, 1)
 	call grid_bind(dt, 1)
 	res2 = DXF(AYB(AXB(dt)*U)*AXB(V))+DYB(AYF(AYB(dt)*V)*AYF(V))
-	call display(res2,"res2 = ")
+	call display(res2,"uv two dimension pos 1 expression result = ")
 	res1 = adv(V,dt,U)
-	call display(res1,"res1 = ")
+	call display(res1,"uv two dimension pos 1 adv() result = ")
+	
+	call grid_bind(U, 2)
+	call grid_bind(V, 2)
+	call grid_bind(dt, 2)
+	res2 = DXB(AXF(AXB(dt)*U) * AXF(U))+ DYF(AXB(AYB(dt)*V) * AYB(U))
+	call display(res2,"uv two dimension pos 2 expression result = ")
+	res1 = adv(U,dt,V)
+	call display(res1,"uv two dimension pos 2 adv() result = ")
 	
 	call grid_bind(U, 3)
 	call grid_bind(V, 3)
@@ -95,9 +102,9 @@ contains
 	call grid_bind(W, 3)
 	call grid_bind(Q, 3)
 	res2 = DXF(AXB(dt)*AXB(Q)*U)+DYF(AYB(dt)*AYB(Q)*V)-DZF(AZB(Q)*W)
-	call display(res2,"res2 = ")
+	call display(res2,"qt pos 3 expression result = ")
 	res1 = adv(Q,dt,U,V,W)
-	call display(res1,"res1 = ")
+	call display(res1,"qt pos 3 adv() result = ")
 	
 	call grid_bind(U, 7)
 	call grid_bind(V, 7)
@@ -105,9 +112,9 @@ contains
 	call grid_bind(W, 7)
 	call grid_bind(Q, 7)
 	res2 = DXF(AXB(Q)* AXB(dt)* AZB(U))+DYF(AYB(Q)* AYB(dt)* AZB(V))-DZB(AZF(W*Q))
-	call display(res2,"res2 = ")
+	call display(res2,"qt pos 7 expression result = ")
 	res1 = adv(Q,dt,U,V,W)
-	call display(res1,"res1 = ")
+	call display(res1,"qt pos 7 adv() result = ")
 
   end subroutine
 	
