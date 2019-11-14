@@ -4,7 +4,113 @@ module oa_test
   use oa_mod
 
 contains
+
+  subroutine linear_solve()
+	implicit none
+	type(array)::A,B,X
+	real(kind=8),pointer :: pA(:,:,:),pX(:,:,:)
+	integer :: numperrow,X_ind(3)
+
+	A = seqs(3,3,1,sw=1,dt=2)
+	b = seqs(3,1,1,sw=1,dt=2)
+	call get_local_buffer(pA,A)
+	
+	call grid_bind(A, 3)
+
+	pA(2,2,2) = 1
+	numperrow = 3
+	call display(A,"A = ")
+	call display(B,"B = ")
+	X = linear_equations_solve(A, b,numperrow)
+	call display(X,"X = ")
+	
+  end subroutine
   
+  subroutine curl_test()
+	implicit none
+	
+	type(array)::U,V,W
+	type(array)::curli,curlj,curlk
+
+	U = rands(5,5,4,sw=1,dt=2)
+	V = rands(5,5,4,sw=1,dt=2)
+	W = rands(5,5,4,sw=1,dt=2)
+	
+	call curl(U,V,W,curli,curlj,curlk)
+	call display(curli,"curli = ")
+	call display(curlj,"curlj = ")
+	call display(curlk,"curlk = ")
+  end subroutine
+  
+  subroutine adv_test()
+	implicit none
+	
+	type(array)::U,V,W,dt,Q
+	type(array)::res1,res2
+	type(array)::dx,dy,dz
+	
+	U = rands(8,8,5,sw=1,dt=2)
+    dx = sub(U, ':', ':', 1)  + 0.1D0
+    dy = sub(U, ':', ':', 1)  + 0.2D0
+    dz = sub(U,  1,   1, ':') + 0.15D0
+
+    call grid_init('C', dx, dy, dz)  ! init grid C with dx, dy, dz
+
+	V = rands(8,8,5,sw=1,dt=2)
+	W = rands(8,8,5,sw=1,dt=2)
+	dt = rands(8,8,5,sw=1,dt=2)
+	Q = rands(8,8,5,sw=1,dt=2)
+	
+	call grid_bind(U, 1)
+	call grid_bind(V, 1)
+	call grid_bind(W, 1)
+	call grid_bind(dt, 1)
+	res2 = DXF(AYB(AXB(dt)*U)*AXB(V))+DYB(AYF(AYB(dt)*V)*AYF(V))-DZF(AYB(W)*AZB(V))
+	call display(res2,"res2 = ")
+	res1 = adv(V,dt,U,W)
+	call display(res1,"res1 = ")
+	
+	
+	call grid_bind(U, 2)
+	call grid_bind(V, 2)
+	call grid_bind(W, 2)
+	call grid_bind(dt, 2)
+	res2 = DXB(AXF(AXB(dt) * u) * AXF(u))+ DYF(AXB(AYB(dt) * v) * AYB(u))-DZF(AXB(w) * AZB(u))
+	call display(res2,"res2 = ")
+	res1 = adv(U,dt,V,W)
+	call display(res1,"res1 = ")	
+	
+	
+	call grid_bind(U, 1)
+	call grid_bind(V, 1)
+	call grid_bind(dt, 1)
+	res2 = DXF(AYB(AXB(dt)*U)*AXB(V))+DYB(AYF(AYB(dt)*V)*AYF(V))
+	call display(res2,"res2 = ")
+	res1 = adv(V,dt,U)
+	call display(res1,"res1 = ")
+	
+	call grid_bind(U, 3)
+	call grid_bind(V, 3)
+	call grid_bind(dt, 3)
+	call grid_bind(W, 3)
+	call grid_bind(Q, 3)
+	res2 = DXF(AXB(dt)*AXB(Q)*U)+DYF(AYB(dt)*AYB(Q)*V)-DZF(AZB(Q)*W)
+	call display(res2,"res2 = ")
+	res1 = adv(Q,dt,U,V,W)
+	call display(res1,"res1 = ")
+	
+	call grid_bind(U, 7)
+	call grid_bind(V, 7)
+	call grid_bind(dt, 7)
+	call grid_bind(W, 7)
+	call grid_bind(Q, 7)
+	res2 = DXF(AXB(Q)* AXB(dt)* AZB(U))+DYF(AYB(Q)* AYB(dt)* AZB(V))-DZB(AZF(W*Q))
+	call display(res2,"res2 = ")
+	res1 = adv(Q,dt,U,V,W)
+	call display(res1,"res1 = ")
+
+  end subroutine
+	
   subroutine array_creation()
     implicit none
     type(array) :: A, B, C, D
@@ -177,26 +283,23 @@ contains
     dy = sub(A, ':', ':', 1)  + 0.2D0
     dz = sub(A,  1,   1, ':') + 0.15D0
 
-    call display(dx, 'dx = ')
-    call display(dy, 'dy = ')
-    call display(dz, 'dz = ')
-
-    call tic("grid_init")  ! start the timer
     call grid_init('C', dx, dy, dz)  ! init grid C with dx, dy, dz
-    call toc("grid_init")  ! end the timer
 
-    A = seqs(3, 3, 3, dt=OA_DOUBLE)
-    ans = 1.0 * DXF(A)
-    call display(ans, "DXF(A) = ")
-
-    call grid_bind(A, 3)  ! bind A to point 3
     ans = DXF(A)
+    call display(ans, "DXF(A) = ")
+    call display(A,"A after DXF = ")
+    !call display(dx,"dx after DXF = ")
+	
+    call grid_bind(A, 3)  ! bind A to point 3
+    call display(A,'A after bind')
+    ans = DXF(A)*1.0
     call display(ans, "after binding C gird at point 3, DXF(A) = ")
   end subroutine
 
   subroutine continuity(nt, nx, ny, nz)
     implicit none
     type(array) :: D, U, V ,E
+
     real*8:: dt
     integer,intent(in) :: nx, ny, nz, nt
     integer :: k
@@ -361,10 +464,10 @@ call toc("heat")
 end module
 
 program main
-  !use mpi
+  use mpi
   use oa_test
   implicit none
-include "mpif.h"
+!include "mpif.h"
   integer :: step
   integer :: i, nt, nx, ny, nz
   ! initialize OpenArray, no split in z-direction
@@ -383,19 +486,24 @@ include "mpif.h"
   ny = 10
   nz = 5
   nt = 5
-  call array_creation()
-  call arithmetic_operation()
-  call array_operation()
-  call stencil_operation()
-  call io_operation()
-  call util_operation()
+  call linear_solve()
+  call curl_test()
+  call adv_test()
+  !call array_creation()
+  !call arithmetic_operation()
+  !call array_operation()
+  !call stencil_operation()
+  !call io_operation()
+  !call util_operation()
 
-  call continuity(nt, nx, ny, nz)
-  call heat_diffusion(nt, nx, ny, nz)
-  call hotspot2D(nt, nx, ny, nz)
-  call hotspot3D(nt, nx, ny, nz)
-  call heat_3d()
-  if(get_rank() .eq. 0)call show_timer()
+  !call continuity(nt, nx, ny, nz)
+  !call heat_diffusion(nt, nx, ny, nz)
+  !call hotspot2D(nt, nx, ny, nz)
+
+  !call hotspot3D(nt, nx, ny, nz)
+  !call heat_3d()
+
+if(get_rank() .eq. 0)call show_timer()
   call oa_finalize()
 end program main
 

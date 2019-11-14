@@ -61,11 +61,11 @@
 
 
 #include "config.h"
-  
+
   module oa_type
     use iso_c_binding
-    !use mpi
     use oa_utils
+	
     type Array
        type(c_ptr) :: ptr = C_NULL_PTR
        integer :: lr = L ! lvalue or rvalue
@@ -646,6 +646,25 @@
        module procedure ops_cosh_array
        module procedure ops_cosh_node
     end interface cosh 
+	
+	interface curl
+       module procedure curl_array_array_array
+	   !Now Expression trees result type is always Array,so the argument of curl is Array and dont need function overloading!
+       !module procedure curl_node_node_node
+	   !module procedure curl_node_array_array
+	   !module procedure curl_node_node_array
+	   !module procedure curl_array_node_node
+	   !module procedure curl_array_array_node
+	   !module procedure curl_array_node_array
+	   !module procedure curl_node_array_node
+    end interface curl 
+	
+		
+	interface adv
+       module procedure adv_uv_three
+	   module procedure adv_uv_two
+	   module procedure adv_qt
+    end interface adv 
 
     interface operator(**)
        module procedure ops_pow_node_int
@@ -1167,6 +1186,25 @@
       call c_grid_bind(A%ptr, pos)
 
     end subroutine
+	
+	subroutine get_array_pos(A, pos)
+      use iso_c_binding
+      type(Array), intent(in) :: A
+      integer,intent(inout):: pos
+      interface
+         subroutine c_pos_get(A,pos) &
+              bind(C, name = 'c_pos_get')
+           use iso_c_binding
+           type(c_ptr), intent(in) :: A
+           integer :: pos
+         end subroutine
+      end interface
+	
+      !ASSERT_LVALUE(A)
+      
+      call c_pos_get(A%ptr, pos)
+
+    end subroutine
 
 
     function dxc_node(A) result(B)
@@ -1643,6 +1681,7 @@
       ! call try_destroy(A)
       ! call destroy(NA)
     end function
+	
     function axb_array(A) result(B)
       implicit none
 
@@ -1671,6 +1710,7 @@
       ! call try_destroy(A)
       ! call destroy(NA)
     end function
+	
     function axf_array(A) result(B)
       implicit none
 
@@ -7997,7 +8037,128 @@
       call c_new_seqs_scalar_node_double_simple(B, id_b)
       call c_new_node_pow_simple(C%id, id_a, id_b)
     end function
+	
+	function adv_uv_three (F,dt,res_v1,res_v2) result(res_node)
+		implicit none
+		type(array) :: F,dt,res_v1,res_v2
+		type(node) :: res_node
+		integer :: F_pos
+		
+		interface
+           subroutine adv_uv_three_pos_one(F,dt,res_v1,res_v2,res_id) &
+                bind(C, name='adv_uv_three_pos_one')
+             use iso_c_binding
+           type(c_ptr) :: F, dt, res_v1, res_v2
+		   integer ,intent(inout):: res_id
+           end subroutine 
+		end interface
+		
+		interface
+           subroutine adv_uv_three_pos_two(F,dt,res_v1,res_v2,res_id) &
+                bind(C, name='adv_uv_three_pos_two')
+             use iso_c_binding
+           type(c_ptr) :: F, dt, res_v1, res_v2
+		   integer  ,intent(inout):: res_id
+           end subroutine 
+		end interface
+		
+		call get_array_pos(F,F_pos)
 
+		if (F_pos == 1) then
+			call adv_uv_three_pos_one(F%ptr,dt%ptr,res_v1%ptr,res_v2%ptr,res_node%id)
+		else if (F_pos == 2) then
+			call adv_uv_three_pos_two(F%ptr,dt%ptr,res_v1%ptr,res_v2%ptr,res_node%id)
+		else
+			write(*,*)"Error：The Function is reload to only supports pos 1 or 2 Array in three dimension , if you want manage the Array of other value,please change the argument of value!"
+			stop
+		endif
+	end function
+
+	function adv_uv_two (F,d,res_v1) result(res_node)
+		implicit none
+		type(array) :: F,d,res_v1
+		type(node) :: res_node
+		integer :: F_pos
+		
+		interface
+           subroutine adv_uv_two_pos_one(F,d,res_v1,res_id) &
+                bind(C, name='adv_uv_two_pos_one')
+             use iso_c_binding
+           type(c_ptr) :: F, d, res_v1
+		   integer ,intent(inout):: res_id
+           end subroutine 
+		end interface
+		
+		interface
+           subroutine adv_uv_two_pos_two(F,d,res_v1,res_id) &
+                bind(C, name='adv_uv_two_pos_two')
+             use iso_c_binding
+           type(c_ptr) :: F, d, res_v1
+		   integer  ,intent(inout):: res_id
+           end subroutine 
+		end interface
+		
+		call get_array_pos(F,F_pos)
+
+		if (F_pos == 1) then
+			call adv_uv_two_pos_one(F%ptr,d%ptr,res_v1%ptr,res_node%id)
+		else if (F_pos == 2) then
+			call adv_uv_two_pos_two(F%ptr,d%ptr,res_v1%ptr,res_node%id)
+		else
+			write(*,*)"Error：The Function is reload to only supports pos 1 or 2 Array in three dimension , if you want manage the Array of other value,please change the argument of value!"
+			stop
+		endif
+	end function
+	
+	function adv_qt(F,dt,res_v1,res_v2,res_v3) result(res_node)
+		implicit none
+		type(array) :: F,dt,res_v1,res_v2,res_v3
+		type(node) :: res_node
+		integer :: F_pos
+		
+		interface
+           subroutine adv_qt_pos_third(F,dt,res_v1,res_v2,res_v3,res_id) &
+                bind(C, name='adv_qt_pos_third')
+             use iso_c_binding
+           type(c_ptr) :: F, dt, res_v1,res_v2,res_v3
+		   integer ,intent(inout):: res_id
+           end subroutine 
+		end interface
+		
+		interface
+           subroutine adv_qt_pos_seven(F,dt,res_v1,res_v2,res_v3,res_id) &
+                bind(C, name='adv_qt_pos_seven')
+             use iso_c_binding
+           type(c_ptr) :: F, dt, res_v1,res_v2,res_v3
+		   integer  ,intent(inout):: res_id
+           end subroutine 
+		end interface
+		
+		call get_array_pos(F,F_pos)
+
+		if (F_pos == 3) then
+			call adv_qt_pos_third(F%ptr,dt%ptr,res_v1%ptr,res_v2%ptr,res_v3%ptr,res_node%id)
+		else if (F_pos == 7) then
+			call adv_qt_pos_seven(F%ptr,dt%ptr,res_v1%ptr,res_v2%ptr,res_v3%ptr,res_node%id)
+		else
+			write(*,*)"Error：The Function is reload to only supports pos 3 or 7 Array in three dimension , if you want manage the Array of other value,please change the argument of value!"
+			stop
+		endif
+	end function
+	
+	subroutine curl_array_array_array(U,V,W,curli,curlj,curlk)
+      implicit none
+	  
+      type(array),intent(in):: U
+      type(array),intent(in):: V
+      type(array),intent(in):: W
+	  type(array),intent(inout):: curli,curlj,curlk
+
+	  curli = DYF(W)- DZF(V)
+	  curlj = DZF(U)- DXF(W)
+	  curlk = DXF(V)- DYF(U)
+	  
+    end subroutine
        
     subroutine array_assign_array(A, B)
       implicit none
