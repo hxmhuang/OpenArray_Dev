@@ -1,87 +1,72 @@
 #ifndef __LOG_HPP__
 #define __LOG_HPP__
 
-
+#include <string>
+#include <cstdio>
+#include <sstream>
 #include <csignal>
 #include <execinfo.h>
-#include <iostream>
-#include <unistd.h>
-#include <boost/log/trivial.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/log/support/date_time.hpp>
-#include <boost/log/common.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/expressions/keyword.hpp>
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/rotating_file_sink.h"
+#include "spdlog/sinks/daily_file_sink.h"
+#include "spdlog/async.h"
+#include "spdlog/fmt/bin_to_hex.h"
+#include "spdlog/fmt/ostr.h"
 
-#include <boost/log/attributes.hpp>
-#include <boost/log/attributes/timer.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-#include <boost/log/sinks/text_file_backend.hpp>
+#define OA_LOG_INFO       log_oa::global()->get_log()->info
+#define OA_LOG_TRACE      log_oa::global()->get_log()->trace
+#define OA_LOG_DEBUG      log_oa::global()->get_log()->debug
+#define OA_LOG_WARNING    log_oa::global()->get_log()->warn
+#define OA_LOG_ERROR      log_oa::global()->get_log()->error
+#define OA_LOG_CRITICAL   log_oa::global()->get_log()->critical
+#define NUM2STR(x)        log_oa::global()->num2str(x)
 
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/console.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
+class log_oa {
 
+private:
+    std::shared_ptr<spdlog::logger> my_logger;
+public:
 
-namespace logging = boost::log;
-namespace attrs = boost::log::attributes;
-namespace src = boost::log::sources;
-namespace sinks = boost::log::sinks;
-namespace expr = boost::log::expressions;
-namespace keywords = boost::log::keywords;
+    ~log_oa(){
+        spdlog::shutdown();
+    };
+    void init();
 
-enum SeverityLevel {
-    Info,
-    Notice,
-    Debug,
-    Warning,
-    Error,
-    Fatal
-};
-BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lg, src::severity_logger_mt<SeverityLevel>)
+    std::string getProcessName();
 
-// 使用方法：例如打印一条安全级别为error的日志，代码书写格式：
-// OA_LOG_ERROR<<"输入内容，按照流方式输入字符串，数字或者加入相关变量"
-#define OA_LOG_INFO   BOOST_LOG_SEV(lg::get(),Info)
-#define OA_LOG_NOTICE  BOOST_LOG_SEV(lg::get(),Notice)
-#define OA_LOG_DEBUG   BOOST_LOG_SEV(lg::get(),Debug)
-#define OA_LOG_WARNING BOOST_LOG_SEV(lg::get(),Warning)
-#define OA_LOG_ERROR   BOOST_LOG_SEV(lg::get(),Error)
-#define OA_LOG_FATAL   BOOST_LOG_SEV(lg::get(),Fatal)
-
-template<typename CharT, typename TraitsT>
-inline std::basic_ostream<CharT, TraitsT> &operator<<(
-        std::basic_ostream<CharT, TraitsT> &strm, SeverityLevel lvl) {
-    static const char *const str[] =
-            {
-                    "I",//info
-                    "N",//notice
-                    "D",//debug
-                    "W",//warning
-                    "E",//error
-                    "F"//fatal
-            };
-    if (static_cast< std::size_t >(lvl) < (sizeof(str) / sizeof(*str)))
-        strm << str[lvl];
-    else
-        strm << static_cast< int >(lvl);
-    return strm;
-}
-class oa_log {
-  public:
-
-    void initLog();
-
-    std::string getProcessName(char *processname);
+    std::string getHostName();
 
     void handle_segv(int signum);
 
-    static oa_log* global() {
-        static oa_log _log;
+    std::shared_ptr<spdlog::logger> get_log()
+    {
+        return my_logger;
+    }
+
+    void trace();
+
+    void multi_sink_init();
+
+    void syslog();
+
+
+    void log_record(std::string msg,std::string level);
+    std::string getCurrentDateTime();
+
+    template<typename T>
+    std::string num2str(T num) {
+        std::stringstream ss;
+        ss << num;
+        std::string str1 = ss.str();
+        return str1;
+    }
+    static log_oa *global() {
+        static log_oa _log;
         return &_log;
     }
 };
+
 
 #endif

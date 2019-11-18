@@ -1,9 +1,21 @@
-#ifndef __LOG_CPP__
-#define __LOG_CPP__
+//
+// Created by GP on 2019/11/14.
+//
 
 #include "log.hpp"
 
-void oa_log::handle_segv(int signum)
+#include <time.h>
+#include <unistd.h>
+#include <iostream>
+
+std::string log_oa::getCurrentDateTime() {
+    time_t cur_time_t = time(NULL);
+    char ch[64] = {0};
+    strftime(ch, sizeof(ch) - 1, "%Y%m%d%H%M%S", localtime(&cur_time_t));
+    std::string exe_time_str = ch;
+    return exe_time_str;
+}
+void log_oa::handle_segv(int signum)
 {
     void *array[100];
     size_t size;
@@ -12,18 +24,27 @@ void oa_log::handle_segv(int signum)
     signal(signum, SIG_DFL); /* 还原默认的信号处理handler */
     size = backtrace (array, 100);
     strings = (char **)backtrace_symbols (array, size);
-    fprintf(stderr,"Launcher received SIG: %d Stack trace:\n", signum);
+//    fprintf(stderr,"Launcher received SIG: %d Stack trace:\n", signum);
+    OA_LOG_ERROR("Launcher received SIG: {0} Stack trace:", signum);
     for (i = 0; i < size; i++)
     {
-        fprintf(stderr,"%ld %s \n",i,strings[i]);
-
+//        fprintf(stderr,"%ld %s \n",i,strings[i]);
+        OA_LOG_ERROR("{0}",strings[i]);
     }
     free (strings);
 }
 
-std::string oa_log::getProcessName(char* processname ){
+std::string log_oa::getHostName() {
+    char computer[256];
+    char processname[2048] = {0};
+    gethostname(computer, 256);
+    std::string str_computer = computer;
+    return str_computer;
+}
+
+std::string log_oa::getProcessName(){
     char processdir[2048] = { 0 };
-//    char processname[2048] = { 0 };
+    char processname[2048] = { 0 };
     do
     {
         char* path_end;
@@ -40,65 +61,87 @@ std::string oa_log::getProcessName(char* processname ){
     return str_processname;
 }
 
-void oa_log::initLog(){
 
+void log_oa::init(){
+    std::string datetime = getCurrentDateTime();
+    std::string filename = "logs/openarray_" + datetime + ".log";
+    my_logger = spdlog::basic_logger_mt<spdlog::async_factory >("file_logger", filename);
+    my_logger->set_level(spdlog::level::trace);
+    my_logger->flush_on(spdlog::level::err);
+    my_logger->set_pattern("[%Y-%m-%d %H:%M:%S "+getHostName()+" "+getProcessName()+" PID:"+num2str(getpid())+"]:[%^%L%$] %v");
+//    my_logger->set_pattern("[%Y-%m-%d %H:%M:%S TID:%t] [%^%L%$] %v");
+//    spdlog::enable_backtrace(10); // create ring buffer with capacity of 10  messages
+//    for (int i = 0; i < 100; i++)
+//    {
+//        spdlog::debug("Backtrace message {}", i); // not logged..
+//    }
+//    // e.g. if some error happened:
+//    spdlog::dump_backtrace(); // log them now!
+    spdlog::flush_every(std::chrono::seconds(3));
+//    my_logger->flush();
+    my_logger->set_error_handler([](const std::string &msg) {
+        printf("*** Custom log error handler: %s ***\n", msg.c_str());
+    });
+    my_logger->info("init complete!");
+}
 
-    logging::formatter formatter=
-            expr::format("%2% %1% %3%[%4%]: [%5%] %6%")
-                % expr::attr<std::string>("Tag")
-                % expr::format_date_time< boost::posix_time::ptime >("TimeStamp","%Y-%m-%d %H:%M:%S")
-                % expr::attr<std::string>("ProcessName")
-//                % expr::attr<attrs::current_process_id::value_type>("ProcessID")
-                % expr::attr<int>("ProcessId")
-                % expr::attr<SeverityLevel>("Severity")
-                % expr::smessage;
+void log_oa::multi_sink_init(){
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    console_sink->set_level(spdlog::level::trace);
+    std::string datetime = getCurrentDateTime();
+    std::string filename = "logs/mulopenarray_" + datetime + ".log";
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(filename, true);
+    file_sink->set_level(spdlog::level::trace);
 
-    logging::add_common_attributes();
+    spdlog::logger logger("multi_sink", {console_sink, file_sink});
+    logger.set_level(spdlog::level::debug);
+    logger.flush_on(spdlog::level::err);
+    spdlog::flush_every(std::chrono::seconds(3));
+    logger.set_error_handler([](const std::string &msg){
+        printf("*** Custom log error handler: %s ***\n", msg.c_str());
+    });
+    logger.set_pattern("[%Y-%m-%d %H:%M:%S "+getHostName()+" PID:"+num2str(getpid())+"]:[%^%L%$] %v");
+    logger.info("Multi sink init complete!");
+    my_logger = logger.clone("multi_sink");
 
-//    auto console_sink=logging::add_console_log();
-    auto file_sink=logging::add_file_log
-            (
-                    keywords::file_name="openarray_%Y%m%d%H%M%S.log",      //文件名 %Y-%m-%d_%N.log
-                    keywords::rotation_size=10*1024*1024,       //单个文件限制大小
-                    keywords::time_based_rotation=sinks::file::rotation_at_time_point(0,0,0)    //每天重建
-//                    keywords::format =
-//                            (
-//                                    expr::stream
-//                                            << expr::format_date_time< boost::posix_time::ptime >("TimeStamp","%Y-%m-%d %H:%M:%S")
-//                                            << " " << expr::attr<std::string>("Tag")<<" "<<expr::attr<std::string>("ProcessName")
-//                                            << "[" << expr::attr<int>("ProcessID")<<"]: ["<<expr::attr<SeverityLevel>("Severity")
-//                                            <<"] "<<expr::smessage
-//                            )
-            );
-//    logging::core::get()->set_filter(logging::trivial::severity>=logging::trivial::info);
-    file_sink->locked_backend()->set_file_collector(sinks::file::make_collector(
-            keywords::target="logs",        //文件夹名
-            keywords::max_size=50*1024*1024,    //文件夹所占最大空间
-            keywords::min_free_space=100*1024*1024  //磁盘最小预留空间
-    ));
+//    logger.warn("this should appear in both console and file");
+//    logger.info("this message should not appear in the console, only in the file");
+}
 
-//    file_sink->set_filter(log_severity>=Log_Warning);   //日志级别过滤
+void log_oa::trace()
+{
+    // trace from default logger
+    //SPDLOG_TRACE("Some trace message.. {} ,{}", 1, 3.23);
+    // debug from default logger
+    //SPDLOG_DEBUG("Some debug message.. {} ,{}", 1, 3.23);
 
-    file_sink->locked_backend()->scan_for_files();
+    auto logger = spdlog::get("daily_logger");
+    SPDLOG_LOGGER_TRACE(logger, "another trace message");
 
-//    console_sink->set_formatter(formatter);
-    file_sink->set_formatter(formatter);
-    file_sink->locked_backend()->auto_flush(true);
+}
 
-    char computer[256];
-    char processname[2048] = {0};
-    gethostname(computer, 256);
-    std::string str_computer = computer;
-    std::string str_processname = oa_log::global()->getProcessName(processname);
-
-    logging::core::get()->add_global_attribute("Tag",attrs::constant< std::string >(str_computer));
-    logging::core::get()->add_global_attribute("ProcessId",attrs::constant< int >(getpid()));
-    logging::core::get()->add_global_attribute("ProcessName",attrs::constant< std::string >(str_processname));
-//    logging::core::get()->add_global_attribute("Scope",attrs::named_scope());
-//    logging::core::get()->add_global_attribute("ProcessID",attrs::current_process_id());
-//    logging::core::get()->add_global_attribute("ProcessName",attrs::current_process_name());
-//    logging::core::get()->add_sink(console_sink);
-    logging::core::get()->add_sink(file_sink);
-
+void log_oa::log_record(std::string msg,std::string level){
+    if (level.find("info")!=std::string::npos){
+        my_logger->info(msg);
+    } else if(level.find("warn")!=std::string::npos){
+        my_logger->warn(msg);
+    }else if(level.find("trace")!=std::string::npos){
+        my_logger->trace(msg);
+    }else if(level.find("debug")!=std::string::npos){
+        my_logger->debug(msg);
+    }else if(level.find("error")!=std::string::npos){
+        my_logger->error(msg);
+    }else if(level.find("critical")!=std::string::npos){
+        my_logger->critical(msg);
+    }else
+        my_logger->info(msg);
+}
+#ifndef _WIN32
+#include "spdlog/sinks/syslog_sink.h"
+void log_oa::syslog()
+{
+    std::string ident = "spdlog";
+    auto syslog_logger = spdlog::syslog_logger_mt("syslog", ident, LOG_PID);
+    syslog_logger->warn("This is warning that will end up in syslog.");
 }
 #endif

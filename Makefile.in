@@ -433,8 +433,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-oplevel0 = -O0 -w -g  -std=c++0x   -D_WITHOUT_LLVM_ -DSUNWAY
-oplevel3 = -O3 -O3 -w -g  -std=c++0x  -D_WITHOUT_LLVM_ -DSUNWAY
+oplevel0 = -O0 -w -g  -std=c++0x   -D_WITHOUT_LLVM_ -DSUNWAY -I ./src
+oplevel3 = -O3 -O3 -w -g  -std=c++0x  -D_WITHOUT_LLVM_ -DSUNWAY -I ./src
 @HAS_NPROC_FALSE@NPROC = 2
 @HAS_NPROC_TRUE@NPROC := $(shell ${NPROC_PROG})
 lib_LIBRARIES = libopenarray.a

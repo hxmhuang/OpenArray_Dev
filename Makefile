@@ -338,7 +338,7 @@ EGREP = /usr/bin/grep -E
 EXEEXT = 
 FC = $(MPIF90)
 FCFLAGS = $(oplevel0)
-FCLIBS =  -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/mpi/intel64/lib/debug_mt -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/mpi/intel64/lib -L/home/app/armadillo-8.200.2/lib64/../lib64 -L/home/app/gcc-7.3/lib/gcc/x86_64-pc-linux-gnu/7.3.0 -L/home/app/gcc-7.3/lib/gcc/x86_64-pc-linux-gnu/7.3.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/home/app/boost-1.67.0-gcc7.3/lib -L/home/app/armadillo-8.200.2/lib64 -L/home/app/llvm/lib -L/home/app/lib-intel/pnetcdf-1.7.0/lib -L/home/app/lib-intel/hdf5/lib -L/home/app/intel/clck/2018.1/lib/intel64 -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/ipp/lib/intel64 -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/compiler/lib/intel64_lin -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/mkl/lib/intel64_lin -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/tbb/lib/intel64/gcc4.7 -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/daal/lib/intel64_lin -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/daal/../tbb/lib/intel64_lin/gcc4.4 -L/home/app/gcc-7.3/lib/gcc/x86_64-pc-linux-gnu/7.3.0/../../.. -lmpifort -lmpi -lmpigi -ldl -lrt -lpthread -lgfortran -lm -lquadmath -lboost_system -lboost_thread -lboost_log_setup -lboost_log -lboost_filesystem -lboost_date_time -lboost_regex
+FCLIBS =  -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/mpi/intel64/lib/debug_mt -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/mpi/intel64/lib -L/home/app/armadillo-8.200.2/lib64/../lib64 -L/home/app/gcc-7.3/lib/gcc/x86_64-pc-linux-gnu/7.3.0 -L/home/app/gcc-7.3/lib/gcc/x86_64-pc-linux-gnu/7.3.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/home/app/armadillo-8.200.2/lib64 -L/home/app/llvm/lib -L/home/app/lib-intel/pnetcdf-1.7.0/lib -L/home/app/lib-intel/hdf5/lib -L/home/app/boost_1_65_1/lib -L/home/app/intel/clck/2018.1/lib/intel64 -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/ipp/lib/intel64 -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/compiler/lib/intel64_lin -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/mkl/lib/intel64_lin -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/tbb/lib/intel64/gcc4.7 -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/daal/lib/intel64_lin -L/home/app/intel/compilers_and_libraries_2018.1.163/linux/daal/../tbb/lib/intel64_lin/gcc4.4 -L/home/app/gcc-7.3/lib/gcc/x86_64-pc-linux-gnu/7.3.0/../../.. -lmpifort -lmpi -lmpigi -ldl -lrt -lpthread -lgfortran -lm -lquadmath
 GREP = /usr/bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
@@ -433,8 +433,8 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
-oplevel0 = -O0 -w -g  -std=c++0x   -D_WITHOUT_LLVM_ -DSUNWAY -DBOOST_LOG_DYN_LINK
-oplevel3 = -O3 -O3 -w -g  -std=c++0x  -D_WITHOUT_LLVM_ -DSUNWAY -DBOOST_LOG_DYN_LINK
+oplevel0 = -O0 -w -g  -std=c++0x   -D_WITHOUT_LLVM_ -DSUNWAY -I ./src
+oplevel3 = -O3 -O3 -w -g  -std=c++0x  -D_WITHOUT_LLVM_ -DSUNWAY -I ./src
 #NPROC = 2
 NPROC := $(shell ${NPROC_PROG})
 lib_LIBRARIES = libopenarray.a
@@ -503,7 +503,7 @@ include_HEADERS = oa_init_fnl.mod oa_min_max.mod oa_option.mod \
 libopenarray_a_AR = $(AR) rcs
 manual_main_SOURCES = examples/oa_main.F90
 manual_main_DEPENDENCIES = libopenarray.a
-manual_main_LDADD = -L. -lopenarray -lstdc++ -lgfortran -lm -ldl -lpthread -lboost_system -lboost_thread -lboost_log_setup -lboost_log -lboost_filesystem -lboost_date_time -lboost_regex ${AM_LDFLAGS}
+manual_main_LDADD = -L. -lopenarray -lstdc++ -lgfortran -lm -ldl -lpthread ${AM_LDFLAGS}
 all: all-am
 
 .SUFFIXES:

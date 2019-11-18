@@ -51,7 +51,7 @@ class TreeRootDict
     void insert(size_t hash, NodePtr np)
     {
         m_map[hash] = np;
-        OA_LOG_INFO << "Expression tree list num +1,hash value:"<<hash;
+        OA_LOG_INFO("Expression tree list num +1,hash value:{0}",hash);
         return;
     }
 

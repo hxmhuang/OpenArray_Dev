@@ -31,5 +31,14 @@
 *.out
 *.app
 
+#make
+./Makefile
+config.log
+config.status
+
 #logs 
 logs
+
+#exec
+manual_main
+kernel_folder
