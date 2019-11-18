@@ -32,9 +32,11 @@
 *.app
 
 #make
-./Makefile
-config.log
-config.status
+/Makefile
+/config.log
+/config.status
+/configure
+/aclocal.*
 
 #logs 
 logs

@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
-oplevel0 = -O0 -w -g  -std=c++0x   -D_WITHOUT_LLVM_ -DSUNWAY
-oplevel3 = -O3 -O3 -w -g  -std=c++0x  -D_WITHOUT_LLVM_ -DSUNWAY
+oplevel0 = -O0 -w -g  -std=c++0x   -D_WITHOUT_LLVM_ -DSUNWAY -I ./src
+oplevel3 = -O3 -O3 -w -g  -std=c++0x  -D_WITHOUT_LLVM_ -DSUNWAY -I ./src
 FCFLAGS = $(oplevel0)
 CFLAGS = $(oplevel0)
 CXXFLAGS = $(oplevel0)
@@ -138,7 +138,7 @@ libopenarray_a_AR = $(AR) rcs
 noinst_PROGRAMS =  manual_main
 manual_main_SOURCES = examples/oa_main.F90
 manual_main_DEPENDENCIES = libopenarray.a
-manual_main_LDADD = -L. -lopenarray -lstdc++ -lgfortran -lm -ldl -lpthread -rdynamic ${AM_LDFLAGS}
+manual_main_LDADD = -L. -lopenarray -lstdc++ -lgfortran -lm -ldl -lpthread ${AM_LDFLAGS}
 
 examples/oa_main.o: src/fortran/oa_mod.o
 
