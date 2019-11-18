@@ -15,12 +15,19 @@
 #include "spdlog/fmt/bin_to_hex.h"
 #include "spdlog/fmt/ostr.h"
 
+// 日志使用方式：include头文件log.hpp
+// 在想记录日志的地方输入： (例如输入安全级别为info的一条日志)
+// OA_LOG_INFO("messag：{0},{1}",str1,str2);
+// 说明：{0} {1} ... 是占位符记号，替换str1，str2字符串(或者数字)内容
+// 还有如下其他安全级别的宏供使用
 #define OA_LOG_INFO       log_oa::global()->get_log()->info
 #define OA_LOG_TRACE      log_oa::global()->get_log()->trace
 #define OA_LOG_DEBUG      log_oa::global()->get_log()->debug
 #define OA_LOG_WARNING    log_oa::global()->get_log()->warn
 #define OA_LOG_ERROR      log_oa::global()->get_log()->error
 #define OA_LOG_CRITICAL   log_oa::global()->get_log()->critical
+
+// 数字转字符串的功能，如有需要也可以使用
 #define NUM2STR(x)        log_oa::global()->num2str(x)
 
 class log_oa {

@@ -31,16 +31,17 @@
 *.out
 *.app
 
-#make
-/Makefile
-/config.log
-/config.status
-/configure
-/aclocal.*
+# make
+Makefile
+config.log
+config.status
+configure
+aclocal.m4
+autom*/
 
-#logs 
+# logs 
 logs
 
-#exec
+# exec
 manual_main
 kernel_folder
