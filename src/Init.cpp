@@ -16,6 +16,7 @@ namespace oa{
   void init(int comm, Shape procs_shape,
           int argc, char** argv){
     oa::MPI::global()->init(comm, argc, argv);
+    log_oa::global()->init();
     /*************************** 注册系统信号，截获出错时内存堆栈信息 *********************************/
     signal(SIGINT, [](int signum) {
         //Received a signal, abnormally exited
@@ -46,7 +47,6 @@ namespace oa{
     #endif
     Partition::set_default_procs_shape(procs_shape);
     Partition::set_default_stencil_width(1);
-	log_oa::global()->init();
     OA_LOG_INFO("log init success!");
 }
 
