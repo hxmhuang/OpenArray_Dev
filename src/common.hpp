@@ -116,6 +116,7 @@ enum NodeType{
   TYPE_DOUBLE,
   TYPE_INT3_REP,
   TYPE_INT3_SHIFT,
+  TYPE_MAT_MULT,
   TYPE_SET
 };
 

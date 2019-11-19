@@ -23,7 +23,7 @@ namespace oa{
 
       np->set_depth(u->get_depth(), v->get_depth());
       
-      // U and V must have same shape
+      // set data shape
       ArrayPtr A=u->get_data();
       ArrayPtr B=v->get_data();
       Shape s_A=A->shape();
@@ -31,6 +31,7 @@ namespace oa{
       Shape s_C=s_A;
       s_C[1]=s_B[1];
       s_C[2]=max(s_A[2],s_B[2]);
+      np->set_shape(s_C);
       // set data other attribute
       np->set_data_type(dt);
       np->set_lbound(u->get_lbound(), v->get_lbound());
