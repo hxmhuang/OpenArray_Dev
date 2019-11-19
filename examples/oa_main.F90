@@ -2,7 +2,7 @@
 module oa_test
   use iso_c_binding
   use oa_mod
-
+  use oa_high_operator
 contains
   
   subroutine array_creation()
@@ -208,6 +208,25 @@ contains
     ! end bind test 
   end subroutine
 
+  subroutine high_oper()
+  implicit none
+  type(array):: U,V,W,A,ans,BX,BY,BZ
+  U=seqs(3,3,3,dt=OA_DOUBLE)
+  V=seqs(3,3,3,dt=OA_DOUBLE)
+  W=seqs(3,3,3,dt=OA_DOUBLE)
+
+  ans=divergence(U,V,W)
+  call display(ans,"divergence over")
+  write(*,*) 'begin to grad.....'
+  
+  A=seqs(3,3,3,dt=OA_DOUBLE)
+  call grad(A,BX,BY,BZ)
+  call display(BX,"X dimention:")
+  call display(BY,"Y dimention:")
+  call display(BZ,"Z dimention:")
+
+ end subroutine
+   
   subroutine continuity(nt, nx, ny, nz)
     implicit none
     type(array) :: D, U, V ,E
@@ -372,6 +391,20 @@ call toc("heat")
 
   end subroutine
 
+  subroutine mat_mult_operation()
+  implicit none
+  type(array):: A,B,C,D,E,F
+  A=ones(3,3,3,dt=OA_DOUBLE)
+  B=seqs(3,3,3,dt=OA_DOUBLE)
+  C=seqs(3,3,1,dt=OA_DOUBLE)
+  D=mat_mult(A,B)
+  call display(D,"D=")
+  E=mat_mult(C,A)
+  call display(E,"E=")
+  F=mat_mult(A,C)
+  call display(F,"F=")
+  end subroutine
+
 end module
 
 program main
@@ -402,8 +435,9 @@ include "mpif.h"
   !call array_operation()
   !call stencil_operation()
   !call io_operation()
-  call util_operation()
-
+  !call util_operation()
+  !call  high_oper()
+  call mat_mult_operation()
   !call continuity(nt, nx, ny, nz)
   !call heat_diffusion(nt, nx, ny, nz)
   !call hotspot2D(nt, nx, ny, nz)
