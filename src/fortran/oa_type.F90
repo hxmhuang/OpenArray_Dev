@@ -265,6 +265,15 @@
         integer::res, id1, id2
        end subroutine
     end interface
+   
+    interface 
+      subroutine c_new_node_mat_mult_simple(res, id1, id2)&
+             bind(C, name='c_new_node_mat_mult_simple')
+        use iso_c_binding
+        implicit none
+        integer :: res,id1,id2
+      end subroutine
+    end interface
 
     interface dxc    
        module procedure dxc_node

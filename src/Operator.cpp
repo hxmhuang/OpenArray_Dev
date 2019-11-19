@@ -1295,7 +1295,16 @@ namespace oa {
         s[TYPE_NOT].rt = 0;
 
 
-        
+        s[TYPE_MAT_MULT].type = TYPE_MAT_MULT;
+        s[TYPE_MAT_MULT].name = "mat_mult";        
+        s[TYPE_MAT_MULT].sy = "mat_mult";
+        s[TYPE_MAT_MULT].ew = false;
+        s[TYPE_MAT_MULT].cl = true;
+        s[TYPE_MAT_MULT].expr = "mat_mult(A,B)";
+  
+        ////!:
+        s[TYPE_MAT_MULT].func = kernel_mat_mult;
+        s[TYPE_MAT_MULT].rt = 0;
 
         s[TYPE_REP].type = TYPE_REP;
         s[TYPE_REP].name = "rep";
@@ -2221,7 +2230,7 @@ namespace oa {
           ss<<"A"<<A->get_bitset();
         }
         ss<<A->get_data_type();
-
+        ss<<A->get_pos();
         // if (A->need_update()) ss<<nd.sy;
         return ;
       }

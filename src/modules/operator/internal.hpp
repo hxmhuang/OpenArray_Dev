@@ -3072,7 +3072,7 @@ namespace oa{
           for (int i = sw + lbound[0]; i < sw + sp[0] - rbound[0]; i++) {
             
             ans[calc_id(i, j, k, S)] = 1.0 * (b[calc_id(i, j, k, S)] - b[calc_id(i - 1, j, k, S)]) / g[calc_id(o, o, k, SG)];
-            
+           
           }
         }
       }
@@ -3111,7 +3111,7 @@ namespace oa{
           for (int i = sw + lbound[0]; i < sw + sp[0] - rbound[0]; i++) {
             
             ans[calc_id(i, j, k, S)] = 1.0 * (b[calc_id(i, j, k, S)] - b[calc_id(i - 1, j, k, S)]) / g[calc_id(o, j, o, SG)];
-            
+           
           }
         }
       }
@@ -3466,7 +3466,7 @@ namespace oa{
           for (int i = sw + lbound[0]; i < sw + sp[0] - rbound[0]; i++) {
             
             ans[calc_id(i, j, k, S)] = 1.0 * (b[calc_id(i + 1, j, k, S)] - b[calc_id(i, j, k, S)]) / g[calc_id(o, j, k, SG)];
-            
+              
           }
         }
       }
