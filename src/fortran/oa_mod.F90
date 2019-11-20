@@ -19,6 +19,7 @@ module oa_mod
   use oa_interpolation
   use oa_linear_solve
   use oa_pvariable
+  use oa_higher_operator
   !use oa_mat_mult
 end module
 
