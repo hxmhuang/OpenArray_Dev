@@ -11,6 +11,7 @@
 #include "Function.hpp"
 #include "Partition.hpp"
 #include <assert.h>
+#include "log.hpp"
 
 #define VAR_1D 1
 #define VAR_2D 2
@@ -22,6 +23,8 @@
 #define CHECK_ERR(status)                               \
   if (status != NC_NOERR) {                             \
     fprintf(stderr, "error found line:%d, msg : %s\n",  \
+            __LINE__, ncmpi_strerror(status));          \
+    OA_LOG_ERROR("error found line:{0}, msg : {1}",     \
             __LINE__, ncmpi_strerror(status));          \
     exit(-1);                                           \
   }
@@ -173,12 +176,13 @@ namespace oa {
       A->set_newest_buffer(GPU);
       #endif
       ncmpi_close(ncid);
+      OA_LOG_INFO("save file:{0} complete.",filename);
     }
 
     ArrayPtr load(const std::string& filename, 
                   const std::string& varname,
                   const MPI_Comm& comm) {
-      
+      OA_LOG_INFO("load file:{0}",filename);
       int status;
       int ncid, varid;
       nc_type var_type;
@@ -541,6 +545,7 @@ namespace oa {
        }
 
        ncmpi_close(ncid);
+       OA_LOG_INFO("save record file:{0}",filename);
        #ifdef __HAVE_CUDA__
        A->set_newest_buffer(GPU);
        #endif
@@ -551,6 +556,7 @@ namespace oa {
                   const std::string& varname,
                   const int record,
                   const MPI_Comm& comm) {
+      OA_LOG_INFO("load record file:{0}",filename);
       int status,i;
       int ncid, varid,var_ndims;
       nc_type var_type;

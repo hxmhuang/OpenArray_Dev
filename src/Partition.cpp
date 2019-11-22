@@ -11,9 +11,11 @@
 #include <functional>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <algorithm>
 #include "utils/utils.hpp"
 #include "MPI.hpp"
+#include "log.hpp"
 
 using namespace std;
 
@@ -236,39 +238,79 @@ void Partition::display(const char *prefix, bool all) {
 
   printf("\tglobal_shape = [%d, %d, %d]\n", 
   m_global_shape[0], m_global_shape[1], m_global_shape[2]);
+  OA_LOG_INFO("global_shape = [{0}, {1}, {2}]",
+  m_global_shape[0], m_global_shape[1], m_global_shape[2]);
+  
   printf("\tprocs_shape = [%d, %d, %d]\n", 
   m_procs_shape[0], m_procs_shape[1], m_procs_shape[2]);
+  OA_LOG_INFO("procs_shape = [{0}, {1}, {2}]",
+  m_procs_shape[0], m_procs_shape[1], m_procs_shape[2]);
+  
   printf("\tbound_type = [%d, %d, %d]\n", 
   m_bound_type[0], m_bound_type[1], m_bound_type[2]);
+  OA_LOG_INFO("bound_type = [{0}, {1}, {2}]",
+  m_bound_type[0], m_bound_type[1], m_bound_type[2]);
+  
   printf("\tstencil_type = %d\n", m_stencil_type);
+  OA_LOG_INFO("stencil_type = {0}",m_stencil_type);
   printf("\tstencil_width = %d\n", m_stencil_width);
+  OA_LOG_INFO("stencil_width = {0}",m_stencil_width);
 
   if (all) display_distr(NULL);
 }
 
 void Partition::display_distr(const char *prefix) {
-  if(prefix != NULL)
+  if(prefix != NULL){
     printf("%s distr info\n", prefix);
-  
+    OA_LOG_INFO("{0} distr info", prefix);
+  }
   printf("\tlx = [%d", m_lx[0]);
   for (int i = 1; i < m_lx.size(); i++) printf(", %d", m_lx[i]);
   printf("]\n");
+  std::string l_str = "lx = [" + NUM2STR(m_lx[0]);
+  for (int i = 1; i < m_lx.size(); i++) l_str = l_str + ", " + NUM2STR(m_lx[i]);
+  l_str += "]";
+  OA_LOG_INFO(" {0}",l_str);
+  
   printf("\tly = [%d", m_ly[0]);
   for (int i = 1; i < m_ly.size(); i++) printf(", %d", m_ly[i]);
   printf("]\n");
+  l_str = "ly = [" + NUM2STR(m_ly[0]);
+  for (int i = 1; i < m_ly.size(); i++) l_str = l_str + ", " + NUM2STR(m_ly[i]);
+  l_str += "]";
+  OA_LOG_INFO(" {0}",l_str);
+  
   printf("\tlz = [%d", m_lz[0]);
   for (int i = 1; i < m_lz.size(); i++) printf(", %d", m_lz[i]);
   printf("]\n");
+  l_str = "lz = [" + NUM2STR(m_lz[0]);
+  for (int i = 1; i < m_lz.size(); i++) l_str = l_str + ", " + NUM2STR(m_lz[i]);
+  l_str += "]";
+  OA_LOG_INFO(" {0}",l_str);
 
   printf("\tclx = [%d", m_clx[0]);
   for (int i = 1; i < m_clx.size(); i++) printf(", %d", m_clx[i]);
   printf("]\n");
+  l_str = "clx = [" + NUM2STR(m_clx[0]);
+  for (int i = 1; i < m_clx.size(); i++) l_str = l_str + ", " + NUM2STR(m_clx[i]);
+  l_str += "]";
+  OA_LOG_INFO(" {0}",l_str);
+  
   printf("\tcly = [%d", m_cly[0]);
   for (int i = 1; i < m_cly.size(); i++) printf(", %d", m_cly[i]);
   printf("]\n");
+  l_str = "cly = [" + NUM2STR(m_cly[0]);
+  for (int i = 1; i < m_cly.size(); i++) l_str = l_str + ", " + NUM2STR(m_cly[i]);
+  l_str += "]";
+  OA_LOG_INFO(" {0}",l_str);
+  
   printf("\tclz = [%d", m_clz[0]);
   for (int i = 1; i < m_clz.size(); i++) printf(", %d", m_clz[i]);
   printf("]\n");
+  l_str = "clz = [" + NUM2STR(m_clz[0]);
+  for (int i = 1; i < m_clz.size(); i++) l_str = l_str + ", " + NUM2STR(m_clz[i]);
+  l_str += "]";
+  OA_LOG_INFO(" {0}",l_str);
   //flush();  
 }
 

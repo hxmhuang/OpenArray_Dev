@@ -12,6 +12,7 @@
 #include "Node.hpp"
 #include "ArrayPool.hpp"
 #include "Function.hpp"
+#include "log.hpp"
 
 class NodePool {
   typedef std::list<Node*> NodeList;
@@ -32,7 +33,10 @@ public:
     // create new node
       p = new Node();
       add_count();
-      if (g_debug) cout<<"NodePool.size() = "<<count()<<endl;
+      if (g_debug) {
+          cout<<"NodePool.size() = "<<count()<<endl;
+          OA_LOG_DEBUG("NodePool.size() = {0}",count());
+      }
     }
     p->set_id(NodePool::global_id());
 

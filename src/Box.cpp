@@ -7,6 +7,7 @@
 #include <iostream>
 #include "Box.hpp"
 #include "common.hpp"
+#include "log.hpp"
 
 using namespace std;
 
@@ -91,6 +92,7 @@ bool Box::equal_shape(const Box &b) {
 
 void Box::display(char const *prefix) const {
   printf("Box %s: \n", prefix);
+  OA_LOG_INFO("Box {0}: ",prefix);
   m_rx.display("rx");
   m_ry.display("ry");
   m_rz.display("rz");

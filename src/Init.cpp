@@ -47,7 +47,7 @@ namespace oa{
     #endif
     Partition::set_default_procs_shape(procs_shape);
     Partition::set_default_stencil_width(1);
-    OA_LOG_INFO("log init success!");
+    OA_LOG_INFO("Init complete.");
 }
 
   // finalize the MPI

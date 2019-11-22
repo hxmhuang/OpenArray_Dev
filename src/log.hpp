@@ -18,8 +18,13 @@
 // 日志使用方式：include头文件log.hpp
 // 在想记录日志的地方输入： (例如输入安全级别为info的一条日志)
 // OA_LOG_INFO("messag：{0},{1}",str1,str2);
-// 说明：{0} {1} ... 是占位符记号，替换str1，str2字符串(或者数字)内容
+// {0} {1} ... 是占位符记号，替换str1，str2字符串(或者数字)内容
 // 还有如下其他安全级别的宏供使用
+/* #define OA_LOG_INFO(args...)       \
+{   \
+    std::lock_guard<std::mutex> lk(log_oa::global()->mut);\
+    log_oa::global()->get_log()->info(args);\
+} */
 #define OA_LOG_INFO       log_oa::global()->get_log()->info
 #define OA_LOG_TRACE      log_oa::global()->get_log()->trace
 #define OA_LOG_DEBUG      log_oa::global()->get_log()->debug
@@ -35,9 +40,10 @@ class log_oa {
 private:
     std::shared_ptr<spdlog::logger> my_logger;
 public:
-
+    std::mutex mut;
     ~log_oa(){
-        spdlog::shutdown();
+        //spdlog::shutdown();
+        spdlog::drop_all();
     };
     void init();
 
@@ -52,13 +58,9 @@ public:
         return my_logger;
     }
 
-    void trace();
-
     void multi_sink_init();
 
-    void syslog();
-
-
+    //弱化了输入方式，暂时不用。
     void log_record(std::string msg,std::string level);
     std::string getCurrentDateTime();
 

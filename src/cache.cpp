@@ -4,6 +4,7 @@
 #include "Node.hpp"
 #include "Operator.hpp"
 #include <unordered_map>
+#include "log.hpp"
 
 typedef std::unordered_map<std::string, NodePtr> Cached_Nodes;
 
@@ -28,6 +29,7 @@ extern "C"{
     it = _cached_nodes.find(key);
     if(it != _cached_nodes.end()){
       std::cout<<"Error: found a same key already cached. Maybe hash conflicted?";
+      OA_LOG_ERROR("Error: found a same key already cached. Maybe hash conflicted?");
     }else{
       _cached_nodes[key] = p;
       oa::ops::gen_kernels_JIT_with_op(p);
@@ -45,7 +47,10 @@ extern "C"{
   }
 
   bool is_valid(NodePtr& p) {
-    if (p == NULL) printf("not found node\n");
+    if (p == NULL) {
+        printf("not found node\n");
+        OA_LOG_INFO("Not found node");
+    }
     else printf("found node\n");
     return (p != NULL);
   }

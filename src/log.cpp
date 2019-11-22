@@ -65,9 +65,11 @@ std::string log_oa::getProcessName(){
 void log_oa::init(){
     std::string datetime = getCurrentDateTime();
     std::string filename = "logs/openarray_" + datetime + ".log";
-    my_logger = spdlog::basic_logger_mt<spdlog::async_factory >("file_logger", filename);
+//    spdlog::init_thread_pool(4096, 1);
+//    my_logger = spdlog::basic_logger_mt<spdlog::async_factory>("file_logger", filename);
+    my_logger = spdlog::basic_logger_mt("file_logger", filename);
     my_logger->set_level(spdlog::level::trace);
-    my_logger->flush_on(spdlog::level::err);
+    my_logger->flush_on(spdlog::level::info);
     my_logger->set_pattern("[%Y-%m-%d %H:%M:%S "+getHostName()+" "+getProcessName()+" PID:"+num2str(getpid())+"]:[%^%L%$] %v");
 //    my_logger->set_pattern("[%Y-%m-%d %H:%M:%S TID:%t] [%^%L%$] %v");
 //    spdlog::enable_backtrace(10); // create ring buffer with capacity of 10  messages
@@ -82,7 +84,7 @@ void log_oa::init(){
     my_logger->set_error_handler([](const std::string &msg) {
         printf("*** Custom log error handler: %s ***\n", msg.c_str());
     });
-    my_logger->info("init complete!");
+    //my_logger->info("init complete!");
 }
 
 void log_oa::multi_sink_init(){
@@ -95,7 +97,7 @@ void log_oa::multi_sink_init(){
 
     spdlog::logger logger("multi_sink", {console_sink, file_sink});
     logger.set_level(spdlog::level::debug);
-    logger.flush_on(spdlog::level::err);
+    logger.flush_on(spdlog::level::info);
     spdlog::flush_every(std::chrono::seconds(3));
     logger.set_error_handler([](const std::string &msg){
         printf("*** Custom log error handler: %s ***\n", msg.c_str());
@@ -106,18 +108,6 @@ void log_oa::multi_sink_init(){
 
 //    logger.warn("this should appear in both console and file");
 //    logger.info("this message should not appear in the console, only in the file");
-}
-
-void log_oa::trace()
-{
-    // trace from default logger
-    //SPDLOG_TRACE("Some trace message.. {} ,{}", 1, 3.23);
-    // debug from default logger
-    //SPDLOG_DEBUG("Some debug message.. {} ,{}", 1, 3.23);
-
-    auto logger = spdlog::get("daily_logger");
-    SPDLOG_LOGGER_TRACE(logger, "another trace message");
-
 }
 
 void log_oa::log_record(std::string msg,std::string level){
@@ -136,12 +126,3 @@ void log_oa::log_record(std::string msg,std::string level){
     }else
         my_logger->info(msg);
 }
-#ifndef _WIN32
-#include "spdlog/sinks/syslog_sink.h"
-void log_oa::syslog()
-{
-    std::string ident = "spdlog";
-    auto syslog_logger = spdlog::syslog_logger_mt("syslog", ident, LOG_PID);
-    syslog_logger->warn("This is warning that will end up in syslog.");
-}
-#endif

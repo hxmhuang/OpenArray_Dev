@@ -10,6 +10,7 @@
 #include "Function.hpp"
 #include "ArrayPool.hpp"
 #include "utils/utils.hpp"
+#include "log.hpp"
 
 using namespace std;
 
@@ -222,22 +223,23 @@ PartitionPtr Array::get_partition() const{
 void Array::display_info(const char *prefix) {
   if (rank() == 0){
     printf("\n%s\n", prefix);
+    OA_LOG_INFO("{0}",prefix);
     std::cout<<"\tdata type = "
              << oa::utils::get_type_string(m_data_type)
              << std::endl;
-
+    OA_LOG_INFO("data type = {0}",oa::utils::get_type_string(m_data_type));
     std::cout<<"\tpos = "
              << pos
              << std::endl;
-
+    OA_LOG_INFO("pos = {0}",pos);
     std::cout<<"\tis_pseudo = "
              << m_is_pseudo
              << std::endl;
-    
+    OA_LOG_INFO("is_pseudo = {0}",m_is_pseudo);
     std::cout<<"\tbitset = "
              << m_bs
              << std::endl;
-
+    OA_LOG_INFO("bitset = {0}",m_bs);
     m_par_ptr->display(NULL, true);
     
     printf("\n");
@@ -328,21 +330,23 @@ void Array::display(const char *prefix, int is, int ie, int js, int je, int ks, 
 
   if (my_rank == 0){
     printf("\n%s\n", prefix);
+    OA_LOG_INFO("{0}",prefix);
     std::cout<<"\tdata type = "
              << oa::utils::get_type_string(m_data_type)
              << std::endl;
-
+    OA_LOG_INFO("data type = {0}",oa::utils::get_type_string(m_data_type));
     std::cout<<"\tpos = "
              << pos
              << std::endl;
-
+    OA_LOG_INFO("pos = {0}",pos);
     std::cout<<"\tis_pseudo = "
              << m_is_pseudo
              << std::endl;
-    
+    OA_LOG_INFO("is_pseudo = {0}",m_is_pseudo);
     std::cout<<"\tbitset = "
              << m_bs
              << std::endl;
+    OA_LOG_INFO("bitset = {0}",m_bs);
 
     m_par_ptr->display(NULL, true);
     

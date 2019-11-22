@@ -7,6 +7,7 @@
 #include<iostream>
 #include "Range.hpp"
 #include  <algorithm>
+#include "log.hpp"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ int Range::size() const{
 
 void Range::display(char const *prefix) const {
   printf("Range %s is [%d, %d)\n", prefix, m_lower, m_upper);
+  OA_LOG_INFO("Range {0} is [{1}, {2})",prefix, m_lower, m_upper);
 }
 
 bool Range::is_inside(const Range &rg) {

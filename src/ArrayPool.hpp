@@ -14,6 +14,7 @@
 #include <list>
 #include <vector>
 #include <unordered_map>
+#include "log.hpp"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ public:
   void show_status(char* tag) {
     printf("\n==========MEMORY POOL STATUS (%s)===============\n", tag);
     printf("memory pool size : %d\n", m_pools.size());
+    OA_LOG_DEBUG("memory pool size : {0}", m_pools.size());
     printf("cached objects : \n");
     
     for (ArrayPoolMap::iterator it = m_pools.begin();
@@ -75,11 +77,15 @@ public:
         ap = new Array(par_ptr, data_type, dev_type);
 
       add_count();
-      if (g_debug) cout<<"ArrayPool.size() = "<<count()<<endl;
+      if (g_debug) {
+          cout<<"ArrayPool.size() = "<<count()<<endl;
+          OA_LOG_DEBUG("ArrayPool size : {0}",count());
+      }
       ap->set_hash(array_hash);
 
 #ifdef DEBUG      
       printf("not found in memory pool!\n");
+      OA_LOG_DEBUG("not found in memory pool!");
 #endif
 
     } else {
@@ -89,6 +95,8 @@ public:
 #ifdef DEBUG
       printf("found in memory pool!\n");
       printf("ap'hash is %d\n", ap->get_hash());
+      OA_LOG_DEBUG("found in memory pool!");
+      OA_LOG_DEBUG("ap hash is {0}", ap->get_hash());
 #endif
       
     }
@@ -128,7 +136,10 @@ public:
         ap = new Array(par_ptr, data_type, dev_type);
 
       add_count();
-      if (g_debug) cout<<"ArrayPool.size() = "<<count()<<endl;
+      if (g_debug) {
+          cout<<"ArrayPool.size() = "<<count()<<endl;
+          OA_LOG_DEBUG("ArrayPool size : {0}",count());
+      }
       ap->set_hash(array_hash);
     } else {
       ap = it->second->back();
@@ -160,7 +171,10 @@ public:
 	ap = new Array(pp, data_type, dev_type);
 
       add_count();
-      if (g_debug) cout<<"ArrayPool.size() = "<<count()<<endl;
+      if (g_debug) {
+          cout<<"ArrayPool.size() = "<<count()<<endl;
+          OA_LOG_DEBUG("ArrayPool size : {0}",count());
+      }
       ap->set_hash(array_hash);
     } else {
       ap = it->second->back();

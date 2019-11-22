@@ -6,6 +6,7 @@
 #include "MPI.hpp"
 #include "c-interface/c_oa_cache.hpp"
 #include "TreeRootDict.hpp"
+#include "log.hpp"
 namespace oa{
   MPI::MPI(){
     m_comm = MPI_COMM_NULL;
@@ -34,6 +35,7 @@ namespace oa{
     c_clear_cache();  // clear cache used in FSET(CSET)
     tree_clear();
     MPI_Finalize();
+    OA_LOG_INFO("MPI finalize complete.");
   }
   
   MPI_Comm& MPI::comm(){

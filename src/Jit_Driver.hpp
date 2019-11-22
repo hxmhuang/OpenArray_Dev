@@ -16,6 +16,7 @@
 #include <dlfcn.h>  
 #include <unistd.h>  
 #include <sys/stat.h>
+#include "log.hpp"
 
 typedef std::shared_ptr<Jit> JitPtr;
 
@@ -45,6 +46,7 @@ class Jit_Driver{
       if (cnt < 0 || cnt >= PATH_MAX)
       {
         printf("***Error***\n");
+        OA_LOG_ERROR("Error insert gcc [cnt err]");
       }
       current_absolute_path[cnt]='\0';
       int i;
@@ -65,6 +67,7 @@ class Jit_Driver{
           if (mkdir(pathname.str().c_str(),0777))
           {
             printf("creat folder failed!!!");
+            OA_LOG_ERROR("creat folder failed!");
           }
         }
 
@@ -104,12 +107,14 @@ class Jit_Driver{
             sourcefile.open(filename.str());
             sourcefile<<code.str();
             sourcefile.close();
+            OA_LOG_INFO("Create kernel fusion file : {0}",filename.str());
           }   
           //if(access(objname.str().c_str(), F_OK) == -1)
           {  
             if(system(cmd.str().c_str()) != 0)
             {
               std::cout<<"gcc compile err"<<std::endl;
+              OA_LOG_ERROR("gcc compile err");
               havegcc = 0;
               return -1;
             }
@@ -129,6 +134,7 @@ class Jit_Driver{
         if(system(cmd.str().c_str()) != 0)
         {
           std::cout<<"gcc compile err"<<std::endl;
+          OA_LOG_ERROR("gcc compile err");
           havegcc = 0;
           return -1;
         }
@@ -136,12 +142,14 @@ class Jit_Driver{
         dltime++;
         dlHandle = dlopen(objname.str().c_str(), RTLD_LAZY);  
         std::cout<<"dlopen again "<<dltime<<std::endl;
+        OA_LOG_ERROR("dlopen again {0}",dltime);
       }  
       char *error = NULL;
       Entry = (uint64_t)dlsym(dlHandle, funcname.str().c_str());  
       if((error = dlerror()) != NULL)  
       {  
-        printf("dlsym error(%s).\n", error);  
+        printf("dlsym error(%s).\n", error);
+        OA_LOG_ERROR("dlsym error({0})",error);        
         return -1;  
       }  
 

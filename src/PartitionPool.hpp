@@ -11,7 +11,7 @@
 #include <vector>
 #include "Partition.hpp"
 #include <unordered_map>
-
+#include "log.hpp"
 using namespace std;
 
 typedef unordered_map<size_t, PartitionPtr> PartitionPoolMap;
@@ -41,7 +41,10 @@ class PartitionPool {
       if (it == m_pool.end()) { // create new partition in pool
         par_ptr = PartitionPtr(new Partition(comm, size, gs, stencil_width));
         add_count();
-        if (g_debug) cout<<"PartitionPool.size() = "<<count()<<endl;
+        if (g_debug) {
+            cout<<"PartitionPool.size() = "<<count()<<endl;
+            OA_LOG_DEBUG("PartitionPool.size() = {0}",count());
+        }
         par_ptr->set_hash(par_hash);
         m_pool[par_hash] = par_ptr;
       } else { // get partition from pool
@@ -63,7 +66,10 @@ class PartitionPool {
       if (it == m_pool_xyz.end()) { // create new partition in pool
         par_ptr = PartitionPtr(new Partition(comm, x, y, z, stencil_width));
         add_count();
-        if (g_debug) cout<<"PartitionPool.size() = "<<count()<<endl;
+        if (g_debug) {
+            cout<<"PartitionPool.size() = "<<count()<<endl;
+            OA_LOG_DEBUG("PartitionPool.size() = {0}",count());
+        }
         par_ptr->set_hash(par_hash);
         m_pool_xyz[par_hash] = par_ptr;
       } else { // get partition from pool

@@ -51,10 +51,9 @@ class TreeRootDict
     void insert(size_t hash, NodePtr np)
     {
         m_map[hash] = np;
-        OA_LOG_INFO("Expression tree list num +1,hash value:{0}",hash);
+        OA_LOG_INFO("Expression tree RootDict num +1,hash value:{0}",hash);
         return;
     }
-
 
     bool find(size_t hash){
         auto iter = m_map.find(hash);
@@ -65,7 +64,6 @@ class TreeRootDict
         return m_map.size();
     }
     
-
     NodePtr& get(size_t hash)
     {
         auto iter = m_map.find(hash);
@@ -96,6 +94,7 @@ class TreeDataNodes
         m_map[hash] = vector<NodePtr>(); 
         auto& it = m_map[hash];
         it.assign(np_vector.begin(), np_vector.end());
+        OA_LOG_INFO("Expression tree DataNodes num +1,hash value:{0}",hash);
         return;
     }
 
@@ -189,6 +188,9 @@ class TreeDataNodes
                 std::cout<<"==============Get wrong node type when modify the tree, exit!==================\n";
                 std::cout<<"Node Type: "<<node_type<<endl;
                 std::cout<<"Tree hash: "<<hash<<endl;
+                OA_LOG_ERROR("==============Get wrong node type when modify the tree, exit!==================");
+                OA_LOG_ERROR("Node Type: {0}",node_type);
+                OA_LOG_ERROR("Tree hash: {0}",hash);
                 exit(EXIT_FAILURE);
             }
             

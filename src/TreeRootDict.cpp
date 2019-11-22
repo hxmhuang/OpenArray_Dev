@@ -22,6 +22,7 @@ NodePtr& oa_build_tree()
     bool found = TreeRootDict::global()->find(hash);
     if (false == found)
     {
+        OA_LOG_INFO("Not found expression hash,start build.");
         data_nodes_vec.clear();
         for (int i = 0; i < simp_nodesize; i++)
         {
@@ -567,6 +568,8 @@ NodePtr& oa_build_tree()
             {
                 std::cout << "==============Get wrong node type when building tree, exit!==================\n";
                 std::cout << "Node Type: " << node_type << endl;
+                OA_LOG_ERROR("==============Get wrong node type when building tree, exit!==================");
+                OA_LOG_ERROR("Node Type: {0}",node_type);
                 exit(EXIT_FAILURE);
             }
         }
@@ -575,6 +578,7 @@ NodePtr& oa_build_tree()
 
         TreeRootDict::global()->insert(hash, root_node);
         TreeDataNodes::global()->insert(hash, data_nodes_vec);
+        OA_LOG_INFO("Expression tree hash[{0}] build complete.",hash);
 	if(root_node->type() == TYPE_SET){
 	        NodePtr A = root_node->input(0);
 	        NodePtr B = root_node->input(1);
@@ -593,9 +597,10 @@ NodePtr& oa_build_tree()
     //auto& cache_data_nodes_vec = TreeDataNodes::global()->get(hash);
 
     //updata data nodes
-    else 
+    else{
+        OA_LOG_INFO("Found expression hash,start update data nodes.");
         TreeDataNodes::global()->modify(hash, simp_data_nodes_vec);
-
+    }
     //NodeVec::global()->clear();  
 		NodeVec::global()->set_nodesize_zero();
     /* 
@@ -605,15 +610,18 @@ NodePtr& oa_build_tree()
         tmp->input(i)->display();
     }*/
     return TreeRootDict::global()->get(hash);
+    OA_LOG_INFO("Found expression hash: {0}",hash);
 }
 
 void data_vec_clear(){
- data_nodes_vec.clear();
+    data_nodes_vec.clear();
+    OA_LOG_INFO("Data nodes vec clear!");
 }
 
 void tree_clear(){
 	TreeRootDict::global()->clear();
 	TreeDataNodes::global()->clear();
         data_vec_clear();
-	NodeVec::global()->clear();  
+	NodeVec::global()->clear();
+    OA_LOG_INFO("Expression tree clear!");
 }
