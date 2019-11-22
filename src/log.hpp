@@ -40,7 +40,7 @@ class log_oa {
 private:
     std::shared_ptr<spdlog::logger> my_logger;
 public:
-    std::mutex mut;
+    //std::mutex mut;
     ~log_oa(){
         //spdlog::shutdown();
         spdlog::drop_all();
