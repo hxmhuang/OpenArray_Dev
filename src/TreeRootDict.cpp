@@ -332,13 +332,13 @@ NodePtr& oa_build_tree()
                 NodePtr new_op = new_node_plus(u, v);
                 sn.ndp = new_op;
             }
-            else if (node_type == TYPE_MAT_MULT)
+            else if (node_type == TYPE_MULT)
             {
                auto &input_0 = simp_nodes_vec[sn.input[0]];
                auto &input_1 = simp_nodes_vec[sn.input[1]];
                NodePtr &u = input_0.ndp;
                NodePtr &v = input_1.ndp;
-               NodePtr new_op = new_node_mat_mult(u, v);
+               NodePtr new_op = new_node_mult(u, v);
                sn.ndp = new_op;
             }
             else if (node_type == TYPE_MINUS)
@@ -356,7 +356,7 @@ NodePtr& oa_build_tree()
                 auto &input_1 = simp_nodes_vec[sn.input[1]];
                 NodePtr &u = input_0.ndp;
                 NodePtr &v = input_1.ndp;
-                NodePtr new_op = new_node_mult(u, v);
+                NodePtr new_op = new_node_mat_mult(u, v);
                 sn.ndp = new_op;
             }
             else if (node_type == TYPE_DIVD)

@@ -2,7 +2,6 @@
 module oa_test
   use iso_c_binding
   use oa_mod
-  use oa_high_operator
 contains
   
   subroutine array_creation()
@@ -436,8 +435,8 @@ include "mpif.h"
   !call stencil_operation()
   !call io_operation()
   !call util_operation()
-  !call  high_oper()
-  call mat_mult_operation()
+  call  high_oper()
+  !call mat_mult_operation()
   !call continuity(nt, nx, ny, nz)
   !call heat_diffusion(nt, nx, ny, nz)
   !call hotspot2D(nt, nx, ny, nz)

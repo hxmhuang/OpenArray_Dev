@@ -17,8 +17,9 @@ module oa_mod
   use oa_option
   use oa_utils
   use oa_interpolation
-  !use oa_high_operator
+  use oa_high_operator
   use oa_mat_mult
+  use oa_bound
 end module
 
 module openarray
