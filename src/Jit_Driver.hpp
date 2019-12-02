@@ -33,6 +33,144 @@ class Jit_Driver{
     int havegcc = -1;
     FKPtrMap kernel_dict;
     JitPoolMap m_jit_pool;
+	
+	int collect_envinfo = -1;
+	vector<char*> env_info_dict = vector<char*>(7);
+	
+	void get_env_info(){
+		char szTest_sys[PATH_MAX] = {0};
+		char szTest_cpu[PATH_MAX] = {0};
+
+		int count = 0;
+		char* pathvar;
+		char error_str[] = "Cant Get!";
+
+		FILE *fp = fopen("/proc/version", "r");
+		
+		if(NULL == fp) 
+		{
+			printf("Failed to open version\n");
+			env_info_dict[0] = error_str;
+			env_info_dict[1] = error_str;
+		}
+		else
+		{
+			
+			while(!feof(fp))
+			{   
+				memset(szTest_sys, 0, sizeof(szTest_sys));
+				
+				fgets(szTest_sys, sizeof(szTest_sys) - 1, fp); // leave out \n
+				
+				char* p = strtok(szTest_sys, " ");
+				
+				while (count<=2)
+				{
+
+					stringstream sss;
+					sss << p;
+					string tempstr = sss.str();  
+					if (count == 0)
+					{	
+						char *cstrr1 = new char[tempstr.length() + 1];
+						strcpy(cstrr1, tempstr.c_str());
+						env_info_dict[0] = cstrr1;
+					}
+					else if(count == 2)
+					{
+						char *cstrr2 = new char[tempstr.length() + 1];
+						strcpy(cstrr2, tempstr.c_str());
+						env_info_dict[1] = cstrr2;
+					}
+					count++;
+					if (count<2)
+					{p = strtok(NULL," ");}
+					
+				}
+				
+			}   
+		}
+		fclose(fp);
+
+
+		fp = fopen("/proc/cpuinfo", "r");
+		if(NULL == fp) {
+			printf("Failed to open cpuinfo\n");
+			env_info_dict[2] = error_str;
+			env_info_dict[3] = error_str;
+			}
+		else{
+			while(!feof(fp))
+			{   
+				memset(szTest_cpu, 0, sizeof(szTest_cpu));
+				fgets(szTest_cpu, sizeof(szTest_cpu) - 1, fp); // leave out \n
+				stringstream ss;
+				ss << szTest_cpu;
+				string tempstr = ss.str();  
+				
+				if (tempstr.find("model name")==0)
+				{	char *cstr1 = new char[tempstr.length() + 1];
+					strcpy(cstr1, tempstr.c_str());
+					
+					env_info_dict[2] = cstr1;
+				}
+				else if (tempstr.find("flag") == 0)
+				{	char *cstr2 = new char[tempstr.length() + 1];
+					strcpy(cstr2, tempstr.c_str());
+					env_info_dict[3] = cstr2;
+					break;
+				}   
+			}
+		}		
+		fclose(fp);
+		
+		
+		pathvar = getenv("PATH");
+		if (NULL == pathvar) 
+		{
+			printf("Cant get PATH environment variable\n");
+			env_info_dict[4] = error_str;
+		}
+		else
+		{
+			env_info_dict[4] = pathvar;
+		}
+		
+		pathvar = getenv("LD_LIBRARY_PATH");
+		if (NULL == pathvar) 
+		{
+			printf("Cant get PATH environment variable\n");
+			env_info_dict[5] = error_str;
+		}
+		else
+		{
+			env_info_dict[5] = pathvar;
+		}
+		      
+		char current_absolute_path[PATH_MAX];
+		int cnt = readlink("/proc/self/exe", current_absolute_path, PATH_MAX);
+		if (cnt < 0 || cnt >= PATH_MAX)
+		{
+			printf("Cant get current absolute path\n");
+			env_info_dict[6] = error_str;
+		}
+		else
+		{
+			env_info_dict[6] = current_absolute_path;	
+		}
+		collect_envinfo = 1;
+		}   
+		
+	void test_env_inf(){
+		const char* key_list[] = { "System", "System_version",  "CPU_name", "instruction_set","PATH","env_LD_PATH","current_absolute_path"};
+		int list_length = env_info_dict.size();
+		
+		for (int i=0;i<list_length;i++){
+			const char* temp_key = key_list[i];
+			char* temp_value = env_info_dict[i];
+		}
+
+	}
 
     int insert_gcc(size_t hash, const stringstream& code){
       int myrank;
@@ -74,8 +212,14 @@ class Jit_Driver{
       objname<<pathname.str()<<"/kernel_"<<hash<<".so";
       ofstream sourcefile;
       stringstream cmd;
+	  
+	  #ifdef __NO_KERNEL_OPTIMIZE__
+		cmd<<"gcc -shared -fPIC -nostartfiles -O0 -g -w -o "<<objname.str().c_str()<<" "<<filename.str().c_str();
+	  #else
+		cmd<<"gcc -shared -fPIC -nostartfiles -O3 -g -w -o "<<objname.str().c_str()<<" "<<filename.str().c_str();
+	  #endif 
       //cmd<<"gcc -shared -fPIC -nostartfiles -O0 -finline -inline-level=2 -finline-functions -no-inline-factor -g -w -o "<<objname.str().c_str()<<" "<<filename.str().c_str();
-      cmd<<"gcc -shared -fPIC -nostartfiles -O3 -g -w -o "<<objname.str().c_str()<<" "<<filename.str().c_str();
+      //cmd<<"gcc -shared -fPIC -nostartfiles -O3 -g -w -o "<<objname.str().c_str()<<" "<<filename.str().c_str();
       //cmd<<"pwd";
 
       //cout<<objname.str().c_str()<<endl;
