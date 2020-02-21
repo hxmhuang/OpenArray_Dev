@@ -70,7 +70,7 @@ void log_oa::init(){
     my_logger = spdlog::basic_logger_mt("file_logger", filename);
     //设置最低级的要求，可以每次记录日志后便写入
     my_logger->set_level(spdlog::level::trace);
-    my_logger->flush_on(spdlog::level::trace);
+    my_logger->flush_on(spdlog::level::info);
     my_logger->set_pattern("[%Y-%m-%d %H:%M:%S "+getHostName()+" "+getProcessName()+" PID:"+num2str(getpid())+"]:[%^%L%$] %v");
 //    my_logger->set_pattern("[%Y-%m-%d %H:%M:%S TID:%t] [%^%L%$] %v");
 //    spdlog::enable_backtrace(10); // create ring buffer with capacity of 10  messages
