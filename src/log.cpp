@@ -16,6 +16,25 @@ std::string log_oa::getCurrentDateTime() {
     return exe_time_str;
 }
 
+void log_oa::handle_segv(int signum)
+{
+    void *array[100];
+    size_t size;
+    char **strings;
+    size_t i;
+    signal(signum, SIG_DFL); /* 还原默认的信号处理handler */
+    size = backtrace (array, 100);
+    strings = (char **)backtrace_symbols (array, size);
+//    fprintf(stderr,"Launcher received SIG: %d Stack trace:\n", signum);
+    OA_LOG_ERROR("Launcher received SIG: {0} Stack trace:", signum);
+    for (i = 0; i < size; i++)
+    {
+//        fprintf(stderr,"%ld %s \n",i,strings[i]);
+        OA_LOG_ERROR("{0}",strings[i]);
+    }
+    free (strings);
+}
+
 std::string log_oa::getHostName() {
     char computer[256];
     char processname[2048] = {0};
