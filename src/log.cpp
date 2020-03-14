@@ -22,16 +22,18 @@ void log_oa::handle_segv(int signum)
     size_t size;
     char **strings;
     size_t i;
-    signal(signum, SIG_DFL); /* 还原默认的信号处理handler */
+    signal(signum, SIG_DFL); //还原默认的信号处理handler
     size = backtrace (array, 100);
     strings = (char **)backtrace_symbols (array, size);
 //    fprintf(stderr,"Launcher received SIG: %d Stack trace:\n", signum);
+//  应该在init之前初始化设置状态检查位
     OA_LOG_ERROR("Launcher received SIG: {0} Stack trace:", signum);
+    
     for (i = 0; i < size; i++)
     {
-//        fprintf(stderr,"%ld %s \n",i,strings[i]);
         OA_LOG_ERROR("{0}",strings[i]);
     }
+    
     free (strings);
 }
 
